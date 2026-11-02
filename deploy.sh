@@ -196,6 +196,81 @@ demander_secret_env() {
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
+# BASE MYSQL - test de connexion et création via cPanel (uapi)
+# ─────────────────────────────────────────────────────────────────────────────
+# Connexion avec les valeurs du .env, en PHP pur : vendor/ n'existe pas encore
+# à la première installation. Les identifiants passent par l'environnement,
+# jamais en argument de commande.
+tester_connexion_bdd() {
+    SAMM_DB_HOST="$(lire_valeur_env DB_HOST)" SAMM_DB_PORT="$(lire_valeur_env DB_PORT)" \
+    SAMM_DB_NAME="$(lire_valeur_env DB_DATABASE)" SAMM_DB_USER="$(lire_valeur_env DB_USERNAME)" \
+    SAMM_DB_PASS="$(lire_valeur_env DB_PASSWORD)" \
+    "${PHP}" -r '
+        try {
+            new PDO(
+                sprintf("mysql:host=%s;port=%s;dbname=%s", getenv("SAMM_DB_HOST") ?: "127.0.0.1", getenv("SAMM_DB_PORT") ?: "3306", getenv("SAMM_DB_NAME")),
+                getenv("SAMM_DB_USER"),
+                getenv("SAMM_DB_PASS"),
+                [PDO::ATTR_TIMEOUT => 5]
+            );
+            exit(0);
+        } catch (Throwable $e) {
+            exit(1);
+        }' 2>/dev/null
+}
+
+# Appel à l'API cPanel du compte. Vrai si cPanel répond status=1 ; sinon les
+# messages d'erreur de cPanel sont affichés (ils ne contiennent pas le mot de passe).
+uapi_mysql() {
+    local reponse
+    reponse="$(uapi --output=json Mysql "$@" 2>/dev/null)" || true
+    printf '%s' "${reponse}" | "${PHP}" -r '
+        $r = json_decode(stream_get_contents(STDIN), true);
+        if ((int) ($r["result"]["status"] ?? 0) === 1) {
+            exit(0);
+        }
+        foreach ((array) ($r["result"]["errors"] ?? ["réponse cPanel illisible"]) as $erreur) {
+            echo "        ", $erreur, PHP_EOL;
+        }
+        exit(1);'
+}
+
+# Crée la base, l'utilisateur et ses privilèges avec les droits du compte
+# cPanel. Une base ou un utilisateur déjà existant n'est pas bloquant : c'est
+# le test de connexion final qui décide. Le mot de passe est passé en argument
+# de uapi : visible un instant dans les processus du compte, jamais à l'écran
+# ni dans le log de ce script.
+creer_bdd_cpanel() {
+    local base utilisateur
+    base="$(lire_valeur_env DB_DATABASE)"
+    utilisateur="$(lire_valeur_env DB_USERNAME)"
+
+    if uapi_mysql create_database name="${base}"; then
+        ok "Base ${base} créée"
+    else
+        warn "Base ${base} non créée (déjà existante ?) - on continue"
+    fi
+    if uapi_mysql create_user name="${utilisateur}" password="$(lire_valeur_env DB_PASSWORD)"; then
+        ok "Utilisateur ${utilisateur} créé"
+    else
+        warn "Utilisateur ${utilisateur} non créé (déjà existant ?) - on continue"
+    fi
+    if uapi_mysql set_privileges_on_database user="${utilisateur}" database="${base}" privileges="ALL PRIVILEGES"; then
+        ok "Privilèges accordés à ${utilisateur} sur ${base}"
+    else
+        err "Attribution des privilèges refusée par cPanel (voir ci-dessus)."
+        err "Terminez dans cPanel > Bases de données MySQL, puis relancez deploy.sh."
+        exit 1
+    fi
+    if tester_connexion_bdd; then
+        ok "Connexion à la base réussie"
+    else
+        err "Connexion à la base toujours impossible : vérifiez DB_* dans ${ENV_FILE}, puis relancez deploy.sh."
+        exit 1
+    fi
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
 # ÉTAPE 0 - Vérifications pré-déploiement
 # Aucune modification n'est faite ici : un refus ne coûte aucune coupure.
 # ─────────────────────────────────────────────────────────────────────────────
@@ -262,7 +337,8 @@ if ! git diff --quiet || ! git diff --cached --quiet; then
     warn "Des modifications locales non commitées existent - elles seront écrasées."
 fi
 
-# Assets front : public/build n'est pas versionné, il faut le construire.
+# Assets front : public/build est versionné (hébergement sans Node) ; il n'est
+# reconstruit ici que si un Node compatible est présent.
 CONSTRUIRE_ASSETS=true
 if [ "${SAMM_SKIP_ASSETS:-}" = "1" ]; then
     CONSTRUIRE_ASSETS=false
@@ -315,11 +391,34 @@ if [ ! -f "${ENV_FILE}" ]; then
             ecrire_env DB_DATABASE "${DEPLOY_DIR}/database/database.sqlite"
             touch "${DEPLOY_DIR}/database/database.sqlite"
         else
+            # Sur cPanel, base et utilisateur portent obligatoirement le
+            # préfixe du compte : on le propose par défaut.
+            UAPI_DISPONIBLE=false
+            DEFAUT_BDD=""
+            if command -v uapi >/dev/null 2>&1; then
+                UAPI_DISPONIBLE=true
+                DEFAUT_BDD="${USER:-$(id -un)}_samm"
+            fi
             demander_env DB_HOST "Hôte de la base" "localhost"
             demander_env DB_PORT "Port de la base" "3306"
-            demander_env DB_DATABASE "Nom de la base" ""
-            demander_env DB_USERNAME "Utilisateur de la base" ""
+            demander_env DB_DATABASE "Nom de la base" "${DEFAUT_BDD}"
+            demander_env DB_USERNAME "Utilisateur de la base" "${DEFAUT_BDD}"
             demander_secret_env DB_PASSWORD "Mot de passe de la base (masqué)"
+
+            if "${PHP}" -m 2>/dev/null | grep -ix pdo_mysql >/dev/null; then
+                if tester_connexion_bdd; then
+                    ok "Connexion à la base réussie"
+                elif [ "${UAPI_DISPONIBLE}" = true ]; then
+                    warn "Connexion à la base impossible (base ou utilisateur inexistant ?)"
+                    read -r -p "    Créer la base et l'utilisateur via cPanel (uapi) ? [O/n] : " reponse_uapi || true
+                    case "${reponse_uapi:-O}" in
+                        n|N) warn "Création ignorée : la base doit exister avant les migrations" ;;
+                        *)   creer_bdd_cpanel ;;
+                    esac
+                else
+                    warn "Connexion à la base impossible : la base doit exister (vérifiez DB_* dans ${ENV_FILE})"
+                fi
+            fi
         fi
         echo ""
         ok "Configuration enregistrée dans .env"
