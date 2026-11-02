@@ -1,5 +1,5 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { ChatCircleDots, FunnelSimple } from '@phosphor-icons/react';
+import { ChatCircleDots, FunnelSimple } from '../../../components/icons';
 import { useState } from 'react';
 import { PageTitle, Pagination } from '../../../components/samm';
 import { Alert, Badge, Button, FieldError, Input, Select, StatusBadge } from '../../../components/ui';

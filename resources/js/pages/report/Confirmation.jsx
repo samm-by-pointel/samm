@@ -1,5 +1,5 @@
 import { usePage } from '@inertiajs/react';
-import { CheckCircle, Copy, DownloadSimple } from '@phosphor-icons/react';
+import { CheckCircle, Copy, DownloadSimple } from '../../components/icons';
 import { useState } from 'react';
 import { CodeTicket, PageTitle } from '../../components/samm';
 import { Button } from '../../components/ui';

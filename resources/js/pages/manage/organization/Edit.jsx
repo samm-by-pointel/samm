@@ -1,5 +1,5 @@
 import { router, useForm, usePage } from '@inertiajs/react';
-import { Plus, Trash } from '@phosphor-icons/react';
+import { Plus, Trash } from '../../../components/icons';
 import { PageTitle } from '../../../components/samm';
 import { Alert, Button, Field, Input, Select } from '../../../components/ui';
 import ManageLayout, { PageHeader } from '../../../layouts/ManageLayout';

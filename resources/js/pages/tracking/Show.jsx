@@ -1,5 +1,5 @@
 import { router, useForm, usePage } from '@inertiajs/react';
-import { DoorOpen, PaperPlaneRight } from '@phosphor-icons/react';
+import { DoorOpen, PaperPlaneRight } from '../../components/icons';
 import { MessageThread, PageTitle } from '../../components/samm';
 import { Alert, Button, Field, StatusBadge, Textarea } from '../../components/ui';
 import PublicLayout, { Narrow } from '../../layouts/PublicLayout';

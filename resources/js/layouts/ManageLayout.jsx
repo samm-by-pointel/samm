@@ -1,5 +1,5 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { Buildings, FolderOpen, ListChecks, SignOut, SquaresFour } from '@phosphor-icons/react';
+import { Buildings, FolderOpen, ListChecks, SignOut, SquaresFour } from '../components/icons';
 import { SammSymbol } from '../components/samm';
 import { cx } from '../components/ui';
 import { useTranslator } from '../lib/i18n';

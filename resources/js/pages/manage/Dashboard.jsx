@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { ArrowRight, Tray, UserCircle, Folders } from '@phosphor-icons/react';
+import { ArrowRight, Tray, UserCircle, Folders } from '../../components/icons';
 import { PageTitle } from '../../components/samm';
 import { Alert } from '../../components/ui';
 import ManageLayout, { PageHeader } from '../../layouts/ManageLayout';

@@ -1,5 +1,5 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { ArrowLeft, ArrowRight, Phone, SignOut } from '@phosphor-icons/react';
+import { ArrowLeft, ArrowRight, Globe, Phone, SignOut } from './icons';
 import { useEffect } from 'react';
 import { leaveQuickly, listenForDoubleEscape } from '../quick-exit';
 import { useDateFormatter, useTranslator } from '../lib/i18n';
@@ -113,6 +113,37 @@ export function QuickExit({ className }) {
 export function LocaleSwitcher({ compact = false }) {
     const { locale, locales, routes } = usePage().props;
     const t = useTranslator();
+    const choose = (code) => router.post(routes.locale, { locale: code }, { preserveScroll: true });
+
+    // Version d'en-tête : globe et codes de langue ; le nom complet reste lu par les lecteurs d'écran.
+    if (compact) {
+        return (
+            <fieldset className="m-0 flex items-center gap-1 rounded-full border border-line py-0.5 pr-0.5 pl-2.5">
+                <legend className="sr-only">{t('public.language.label')}</legend>
+                <Globe size={18} className="text-muted" aria-hidden="true" />
+                {locales.map((item) => {
+                    const active = item.code === locale;
+
+                    return (
+                        <button
+                            key={item.code}
+                            type="button"
+                            lang={item.code}
+                            aria-current={active ? 'true' : undefined}
+                            onClick={() => choose(item.code)}
+                            className={cx(
+                                'inline-flex min-h-10 min-w-10 items-center justify-center rounded-full px-2 text-[14px] font-bold uppercase',
+                                active ? 'bg-brand-soft text-brand' : 'text-muted hover:text-ink',
+                            )}
+                        >
+                            <span aria-hidden="true">{item.code}</span>
+                            <span className="sr-only">{item.name}</span>
+                        </button>
+                    );
+                })}
+            </fieldset>
+        );
+    }
 
     return (
         <fieldset className="m-0 border-0 p-0">
@@ -127,7 +158,7 @@ export function LocaleSwitcher({ compact = false }) {
                                 type="button"
                                 lang={item.code}
                                 aria-current={active ? 'true' : undefined}
-                                onClick={() => router.post(routes.locale, { locale: item.code }, { preserveScroll: true })}
+                                onClick={() => choose(item.code)}
                                 className={cx(
                                     'inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-full px-3 text-[14px] font-semibold',
                                     active ? 'bg-brand-soft text-brand' : 'text-muted hover:bg-surface-alt hover:text-ink',

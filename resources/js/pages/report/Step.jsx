@@ -1,5 +1,5 @@
 import { router, useForm } from '@inertiajs/react';
-import { EyeSlash, LockKey, Paperclip, UserCircleDashed } from '@phosphor-icons/react';
+import { EyeSlash, LockKey, Paperclip, UserCircleDashed } from '../../components/icons';
 import { EmergencyContacts, PageTitle, Stepper } from '../../components/samm';
 import { Alert, Button, Checkbox, Field, FieldError, Input, RadioCards, Textarea, cx } from '../../components/ui';
 import PublicLayout, { Narrow } from '../../layouts/PublicLayout';

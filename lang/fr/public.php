@@ -23,7 +23,8 @@ return [
     ],
 
     'home' => [
-        'title' => 'Vous pouvez signaler une situation en toute confidentialité.',
+        'title_lead' => 'Vous pouvez signaler une situation en toute',
+        'title_highlight' => 'confidentialité.',
         'lead' => 'Violence, harcèlement, discrimination : votre identité n\'est pas nécessaire pour déposer un signalement. Vous recevrez un code pour suivre votre dossier et échanger avec la personne qui le traite.',
         'report_cta' => 'Faire un signalement',
         'track_cta' => 'Suivre mon dossier',

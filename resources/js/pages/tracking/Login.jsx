@@ -1,5 +1,5 @@
 import { useForm, usePage } from '@inertiajs/react';
-import { Key } from '@phosphor-icons/react';
+import { Key } from '../../components/icons';
 import { PageTitle } from '../../components/samm';
 import { Alert, Button, Field, Input } from '../../components/ui';
 import PublicLayout, { Narrow } from '../../layouts/PublicLayout';

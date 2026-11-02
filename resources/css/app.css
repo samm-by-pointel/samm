@@ -1,12 +1,11 @@
 /*
  * Sàmm - thème Tailwind.
- * Polices embarquées (charte §4, §11.2) : aucune requête vers un service tiers.
- * Atkinson Hyperlegible a été dessinée pour les personnes malvoyantes ; sa version
- * Mono distingue sans ambiguïté 0/O et 1/l, ce que les codes de suivi exigent.
+ * Police embarquée (charte §4, §11.2) : aucune requête vers un service tiers.
+ * Inter, avec ses variantes qui distinguent l/I/1 et 0/O ; les codes de suivi
+ * utilisent la police à chasse fixe du système, déjà installée sur l'appareil.
  */
-@import '@fontsource-variable/atkinson-hyperlegible-next/wght.css';
-@import '@fontsource-variable/atkinson-hyperlegible-next/wght-italic.css';
-@import '@fontsource-variable/atkinson-hyperlegible-mono/wght.css';
+@import '@fontsource-variable/inter/wght.css';
+@import '@fontsource-variable/inter/wght-italic.css';
 @import 'tailwindcss';
 
 @source '../js';
@@ -93,8 +92,8 @@
 }
 
 @theme inline {
-  --font-sans: 'Atkinson Hyperlegible Next Variable', 'Segoe UI', system-ui, sans-serif;
-  --font-mono: 'Atkinson Hyperlegible Mono Variable', ui-monospace, Menlo, Consolas, monospace;
+  --font-sans: 'Inter Variable', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
 
   --color-surface: var(--surface);
   --color-surface-alt: var(--surface-alt);
@@ -123,6 +122,8 @@
   html { -webkit-text-size-adjust: 100%; }
   body {
     @apply bg-surface text-ink font-sans antialiased;
+    /* cv05 : l avec queue, cv08 : I avec empattements, zero : 0 barré */
+    font-feature-settings: 'cv05', 'cv08', 'zero';
     font-size: 17px;
     line-height: 1.55;
   }

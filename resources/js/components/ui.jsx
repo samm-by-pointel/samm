@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { CheckCircle, Info, WarningCircle } from '@phosphor-icons/react';
+import { CheckCircle, Info, WarningCircle } from './icons';
 import { useId } from 'react';
 
 export function cx(...classes) {

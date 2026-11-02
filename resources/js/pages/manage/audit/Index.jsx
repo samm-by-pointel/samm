@@ -1,5 +1,5 @@
 import { Link, router } from '@inertiajs/react';
-import { FunnelSimple } from '@phosphor-icons/react';
+import { FunnelSimple } from '../../../components/icons';
 import { useState } from 'react';
 import { PageTitle, Pagination } from '../../../components/samm';
 import { Alert, Button, Select } from '../../../components/ui';

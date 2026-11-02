@@ -1,5 +1,5 @@
 import { usePage } from '@inertiajs/react';
-import { Hourglass } from '@phosphor-icons/react';
+import { Hourglass } from '../components/icons';
 import { PageTitle } from '../components/samm';
 import { Button } from '../components/ui';
 import PublicLayout, { Narrow } from '../layouts/PublicLayout';

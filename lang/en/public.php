@@ -23,7 +23,8 @@ return [
     ],
 
     'home' => [
-        'title' => 'You can report a situation in full confidentiality.',
+        'title_lead' => 'You can report a situation in full',
+        'title_highlight' => 'confidentiality.',
         'lead' => 'Violence, harassment, discrimination: your identity is not required to submit a report. You will receive a code to follow your case and exchange with the person handling it.',
         'report_cta' => 'Make a report',
         'track_cta' => 'Follow my case',

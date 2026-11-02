@@ -1,5 +1,5 @@
 import { Link, useForm, useHttp, usePage } from '@inertiajs/react';
-import { ArrowLeft, Eye, ListChecks, NotePencil, PaperPlaneRight, Warning } from '@phosphor-icons/react';
+import { ArrowLeft, Eye, ListChecks, NotePencil, PaperPlaneRight, Warning } from '../../../components/icons';
 import { useState } from 'react';
 import { MessageThread, PageTitle } from '../../../components/samm';
 import { Alert, Badge, Button, DefinitionList, Field, Select, StatusBadge, Textarea, cx } from '../../../components/ui';

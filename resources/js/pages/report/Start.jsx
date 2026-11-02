@@ -1,5 +1,5 @@
 import { router, usePage } from '@inertiajs/react';
-import { Check, Clock, X } from '@phosphor-icons/react';
+import { Check, Clock, X } from '../../components/icons';
 import { PageTitle } from '../../components/samm';
 import { Alert, Button } from '../../components/ui';
 import PublicLayout, { Narrow } from '../../layouts/PublicLayout';
