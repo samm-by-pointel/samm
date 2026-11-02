@@ -1,11 +1,20 @@
 import { router, useForm } from '@inertiajs/react';
-import { EyeSlash, LockKey, Paperclip, UserCircleDashed } from '../../components/icons';
-import { EmergencyContacts, PageTitle, Stepper } from '../../components/samm';
+import { ArrowLeft, ArrowRight, EyeSlash, LockKey, Paperclip, UserCircleDashed } from '../../components/icons';
+import { EmergencyContacts, PageTitle, PublicHero, Stepper } from '../../components/samm';
 import { Alert, Button, Checkbox, Field, FieldError, Input, RadioCards, Textarea, cx } from '../../components/ui';
 import PublicLayout, { Narrow } from '../../layouts/PublicLayout';
 import { useTranslator } from '../../lib/i18n';
 
 const LEVEL_ICONS = { anonymous: EyeSlash, pseudonymous: UserCircleDashed, confidential: LockKey };
+
+const LEADS = {
+    situation: 'report_form.situation.lead',
+    confidentialite: 'report_form.confidentiality.lead',
+    description: 'report_form.description.lead',
+    personnes: 'report_form.people.lead',
+    'pieces-jointes': 'report_form.attachments.lead',
+    consentement: 'report_form.consent.lead',
+};
 
 /* Valeurs de départ de chaque étape, reprises du brouillon conservé en session */
 function initialData(step, values) {
@@ -68,68 +77,61 @@ function StepForm(props) {
     };
 
     return (
-        <Narrow>
+        <>
             <PageTitle title={title} />
-            <Stepper steps={steps} current={step} />
+            <PublicHero title={title} lead={t(LEADS[step])} eyebrow={<div className="mb-8"><Stepper steps={steps} current={step} /></div>} />
 
-            <h1 className="mt-8 text-[clamp(30px,4.5vw,40px)] leading-tight font-bold">{title}</h1>
-            <Intro {...props} />
+            <Narrow className="-mt-8 pt-0 sm:pt-0">
+                <Intro {...props} />
 
-            {hasErrors && (
-                <Alert tone="urgent" className="mt-6" title={t('report_form.errors.title')}>
-                    {t('report_form.errors.help')}
-                </Alert>
-            )}
+                {hasErrors && (
+                    <Alert tone="urgent" className="mt-6" title={t('report_form.errors.title')}>
+                        {t('report_form.errors.help')}
+                    </Alert>
+                )}
 
-            <form onSubmit={submit} noValidate className="mt-8 space-y-8 rounded-3xl border border-line bg-surface p-6 sm:p-8">
-                <Fields {...props} form={form} />
+                <form onSubmit={submit} noValidate className="mt-6 overflow-hidden rounded-[28px] border border-line bg-surface">
+                    <div className="space-y-8 p-6 sm:p-8">
+                        <Fields {...props} form={form} />
+                    </div>
 
-                <div className="flex flex-wrap items-center gap-3 border-t border-line pt-6">
-                    <Button type="submit" size="lg" disabled={form.processing}>
-                        {submitLabel}
-                    </Button>
-                    <Button href={backUrl} variant="quiet">
-                        {t('report_form.back')}
-                    </Button>
+                    <div className="flex flex-wrap items-center gap-3 border-t border-line bg-surface-alt px-6 py-5 sm:px-8">
+                        <Button type="submit" size="lg" disabled={form.processing}>
+                            {submitLabel}
+                            <ArrowRight size={18} weight="bold" aria-hidden="true" />
+                        </Button>
+                        <Button href={backUrl} variant="quiet">
+                            <ArrowLeft size={18} aria-hidden="true" />
+                            {t('report_form.back')}
+                        </Button>
+                    </div>
+                </form>
+
+                <div className="mt-6">
+                    <button
+                        type="button"
+                        onClick={() => router.post(abandonUrl)}
+                        className="min-h-11 rounded-xl px-1 text-[15px] font-semibold text-muted underline underline-offset-4 hover:text-ink"
+                    >
+                        {t('report_form.abandon')}
+                    </button>
                 </div>
-            </form>
-
-            <div className="mt-6">
-                <button
-                    type="button"
-                    onClick={() => router.post(abandonUrl)}
-                    className="min-h-11 rounded-xl px-1 text-[15px] font-semibold text-muted underline underline-offset-4 hover:text-ink"
-                >
-                    {t('report_form.abandon')}
-                </button>
-            </div>
-        </Narrow>
+            </Narrow>
+        </>
     );
 }
 
+/* Phrase d'introduction de chaque étape, affichée dans le bandeau */
 function Intro({ step, immediateDanger, summary }) {
     const t = useTranslator();
-    const leads = {
-        situation: 'report_form.situation.lead',
-        confidentialite: 'report_form.confidentiality.lead',
-        description: 'report_form.description.lead',
-        personnes: 'report_form.people.lead',
-        'pieces-jointes': 'report_form.attachments.lead',
-        consentement: 'report_form.consent.lead',
-    };
 
     return (
         <>
-            <p className="mt-3 text-[19px] leading-relaxed text-muted">{t(leads[step])}</p>
 
-            {step === 'personnes' && immediateDanger && (
-                <div className="mt-6">
-                    <EmergencyContacts />
-                </div>
-            )}
+            {step === 'personnes' && immediateDanger && <EmergencyContacts />}
 
             {step === 'consentement' && (
-                <section aria-labelledby="recap-title" className="mt-6 rounded-3xl bg-surface-alt p-6">
+                <section aria-labelledby="recap-title" className="rounded-[28px] border border-line bg-surface p-6">
                     <h2 id="recap-title" className="text-[19px] font-bold">
                         {t('report_form.consent.summary_title')}
                     </h2>

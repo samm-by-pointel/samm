@@ -1,5 +1,6 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { ArrowLeft, ArrowRight, Globe, Phone, SignOut } from './icons';
+import { ArrowLeft, ArrowRight, Check, Globe, LockKey, Phone, SignOut } from './icons';
+import { Wave } from './illustrations';
 import { useEffect } from 'react';
 import { leaveQuickly, listenForDoubleEscape } from '../quick-exit';
 import { useDateFormatter, useTranslator } from '../lib/i18n';
@@ -223,7 +224,7 @@ export function EmergencyContacts({ variant = 'card' }) {
     }
 
     return (
-        <section aria-labelledby="samm-emergency-title" className="rounded-3xl border border-line bg-surface-alt p-5 sm:p-6">
+        <section aria-labelledby="samm-emergency-title" className="rounded-[28px] border border-line bg-surface-alt p-5 sm:p-6">
             <h2 id="samm-emergency-title" className="flex items-center gap-2 text-[19px] font-bold">
                 <Phone size={22} weight="fill" className="text-brand" aria-hidden="true" />
                 {t('public.emergency.title')}
@@ -234,7 +235,7 @@ export function EmergencyContacts({ variant = 'card' }) {
     );
 }
 
-/* Progression du formulaire (charte §12.5) : étape annoncée, « Étape x sur y » */
+/* Progression du formulaire (charte §12.5) : pastilles reliées, étape faite cochée, « Étape x sur y » */
 export function Stepper({ steps, current }) {
     const t = useTranslator();
     const position = steps.findIndex((step) => step.key === current) + 1;
@@ -242,18 +243,30 @@ export function Stepper({ steps, current }) {
 
     return (
         <nav aria-label={t('report_form.progress')}>
-            <p className="mb-3 text-[15px] font-semibold text-muted">
+            <p className="mb-4 text-[15px] font-semibold text-brand">
                 {t('report_form.step_of', { current: position, total: steps.length, label: currentStep?.label ?? '' })}
             </p>
-            <ol className="flex gap-1.5">
+            <ol className="flex items-start">
                 {steps.map((step, index) => {
                     const done = index + 1 < position;
                     const isCurrent = step.key === current;
+                    const last = index === steps.length - 1;
 
                     return (
-                        <li key={step.key} aria-current={isCurrent ? 'step' : undefined} className="flex-1">
-                            <span className={cx('block h-1.5 rounded-full', done || isCurrent ? 'bg-brand' : 'bg-line')} />
-                            <span className={cx('mt-2 hidden text-[13px] leading-tight md:block', isCurrent ? 'font-semibold text-ink' : 'text-muted')}>
+                        <li key={step.key} aria-current={isCurrent ? 'step' : undefined} className={cx('relative flex flex-col items-center', last ? 'flex-none' : 'flex-1')}>
+                            {!last && <span aria-hidden="true" className={cx('absolute top-4 left-1/2 h-0.5 w-full', done ? 'bg-brand' : 'bg-line')} />}
+                            <span
+                                aria-hidden="true"
+                                className={cx(
+                                    'relative grid size-8 place-items-center rounded-full border-2 text-[14px] font-bold',
+                                    done && 'border-brand bg-brand text-on-brand',
+                                    isCurrent && 'border-brand bg-surface text-brand ring-4 ring-brand-soft',
+                                    !done && !isCurrent && 'border-line bg-surface text-muted',
+                                )}
+                            >
+                                {done ? <Check size={16} weight="bold" /> : index + 1}
+                            </span>
+                            <span className={cx('mt-2 hidden max-w-24 text-center text-[12px] leading-tight md:block', isCurrent ? 'font-semibold text-ink' : 'text-muted')}>
                                 {step.label}
                             </span>
                         </li>
@@ -265,30 +278,52 @@ export function Stepper({ steps, current }) {
 }
 
 /**
- * Le code de suivi, présenté comme un ticket à conserver : c'est l'objet
- * propre à Sàmm, la seule clé qui ramène à un dossier.
+ * Le code de suivi, présenté comme une carte à conserver, fermée par un cadenas :
+ * c'est l'objet propre à Sàmm, la seule clé qui ramène à un dossier.
  */
-export function CodeTicket({ rows, caption, className, notchClass = 'bg-surface' }) {
+export function CodeTicket({ rows, caption, title, className }) {
     return (
-        <div className={cx('relative rounded-3xl bg-accent-soft px-6 py-5 text-ink sm:px-8 sm:py-6', className)}>
-            {notchClass && (
-                <>
-                    <span aria-hidden="true" className={cx('absolute top-1/2 -left-3 size-6 -translate-y-1/2 rounded-full', notchClass)} />
-                    <span aria-hidden="true" className={cx('absolute top-1/2 -right-3 size-6 -translate-y-1/2 rounded-full', notchClass)} />
-                </>
-            )}
-            <dl className="space-y-4">
+        <div className={cx('overflow-hidden rounded-[28px] border border-line bg-surface text-ink', className)}>
+            <div className="flex items-center justify-between gap-4 bg-brand-soft px-6 py-3 sm:px-8">
+                <span className="text-[14px] font-bold text-brand">{title ?? rows[0]?.label}</span>
+                <span aria-hidden="true" className="grid size-9 place-items-center rounded-full bg-ink text-on-ink">
+                    <LockKey size={18} weight="fill" />
+                </span>
+            </div>
+            <dl className="space-y-5 px-6 py-5 sm:px-8 sm:py-6">
                 {rows.map((row, index) => (
-                    <div key={row.label} className={cx(index > 0 && 'border-t-2 border-dashed border-accent/30 pt-4')}>
-                        <dt className="text-[14px] font-semibold text-accent">{row.label}</dt>
+                    <div key={row.label} className={cx(index > 0 && 'border-t border-dashed border-line-strong/50 pt-5')}>
+                        {(index > 0 || title) && <dt className="text-[14px] font-semibold text-muted">{row.label}</dt>}
+                        {index === 0 && !title && <dt className="sr-only">{row.label}</dt>}
                         <dd id={row.id} className="mt-1 font-mono text-[clamp(22px,4vw,30px)] font-bold tracking-[0.12em] break-all">
                             {row.value}
                         </dd>
                     </div>
                 ))}
+                {caption && <p className="text-[14px] text-muted">{caption}</p>}
             </dl>
-            {caption && <p className="mt-4 text-[14px] text-muted">{caption}</p>}
         </div>
+    );
+}
+
+/**
+ * Bandeau d'en-tête des pages publiques, dans le langage de l'accueil : fond
+ * lilas, titre, phrase d'introduction, et une illustration ou un élément à droite.
+ */
+export function PublicHero({ eyebrow, title, lead, aside, children, narrow = true }) {
+    return (
+        <section className="relative overflow-hidden bg-surface-alt">
+            <div className={cx('relative mx-auto grid items-center gap-8 px-5 pt-10 pb-20 sm:px-8 sm:pt-14 sm:pb-24', narrow ? 'max-w-[960px] lg:grid-cols-[minmax(0,1fr)_240px]' : 'max-w-7xl lg:grid-cols-[minmax(0,1fr)_320px]', !aside && 'lg:grid-cols-1')}>
+                <div className="min-w-0">
+                    {eyebrow}
+                    <h1 className="text-[clamp(30px,4.5vw,44px)] leading-tight font-bold tracking-[-0.01em]">{title}</h1>
+                    {lead && <p className="mt-4 max-w-2xl text-[18px] leading-relaxed">{lead}</p>}
+                    {children}
+                </div>
+                {aside && <div className="hidden justify-self-end lg:block">{aside}</div>}
+            </div>
+            <Wave className="absolute bottom-0 left-0 h-10 w-full sm:h-14" />
+        </section>
     );
 }
 

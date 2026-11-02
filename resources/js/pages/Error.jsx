@@ -1,6 +1,6 @@
 import { usePage } from '@inertiajs/react';
 import { Hourglass } from '../components/icons';
-import { PageTitle } from '../components/samm';
+import { PageTitle, PublicHero } from '../components/samm';
 import { Button } from '../components/ui';
 import PublicLayout, { Narrow } from '../layouts/PublicLayout';
 import { useTranslator } from '../lib/i18n';
@@ -10,15 +10,23 @@ export default function Error({ status }) {
     const t = useTranslator();
 
     return (
-        <Narrow>
+        <>
             <PageTitle title={t(`public.errors.${status}.title`)} />
-            <Hourglass size={48} weight="duotone" className="text-brand" aria-hidden="true" />
-            <h1 className="mt-6 text-[clamp(30px,4.5vw,40px)] leading-tight font-bold">{t(`public.errors.${status}.title`)}</h1>
-            <p className="mt-3 text-[19px] text-muted">{t(`public.errors.${status}.lead`)}</p>
-            <Button href={routes.home} variant="secondary" className="mt-8">
-                {t('public.errors.back_home')}
-            </Button>
-        </Narrow>
+            <PublicHero
+                title={t(`public.errors.${status}.title`)}
+                lead={t(`public.errors.${status}.lead`)}
+                eyebrow={
+                    <span aria-hidden="true" className="mb-5 grid size-16 place-items-center rounded-full bg-surface">
+                        <Hourglass size={36} className="text-brand" />
+                    </span>
+                }
+            />
+            <Narrow className="-mt-8 pt-0 sm:pt-0">
+                <Button href={routes.home} variant="secondary">
+                    {t('public.errors.back_home')}
+                </Button>
+            </Narrow>
+        </>
     );
 }
 
