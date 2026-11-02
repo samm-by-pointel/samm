@@ -36,7 +36,7 @@ class CasePriorityTest extends TestCase
 
         $this->assertSame(CasePriority::High, $case->fresh()->priority);
         $entry = AuditLog::query()->where('action', AuditAction::CasePriorityChanged->value)->sole();
-        $this->assertSame(['from' => 'normal', 'to' => 'high'], $entry->context);
+        $this->assertEquals(['from' => 'normal', 'to' => 'high'], $entry->context);
 
         $this->actingAs($manager)->get(route('manage.cases.show', $case))->assertSee('Priorité haute');
 

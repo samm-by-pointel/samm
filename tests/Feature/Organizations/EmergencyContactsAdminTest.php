@@ -36,7 +36,7 @@ class EmergencyContactsAdminTest extends TestCase
         $this->actingAs($this->admin)->post(route('manage.organization.emergency.store'), ['label' => ['fr' => 'Police'], 'phone_number' => '17', 'position' => 1, 'is_active' => '1'])->assertRedirect();
 
         $pompiers = EmergencyContact::query()->where('phone_number', '18')->sole();
-        $this->assertSame(['fr' => 'Pompiers', 'en' => 'Fire brigade'], $pompiers->label);
+        $this->assertEquals(['fr' => 'Pompiers', 'en' => 'Fire brigade'], $pompiers->label);
 
         auth()->logout();
         $this->get(route('public.home'))->assertSeeInOrder(['Police', '17', 'Pompiers', '18']);

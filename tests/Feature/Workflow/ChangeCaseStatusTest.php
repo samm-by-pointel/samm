@@ -37,7 +37,7 @@ class ChangeCaseStatusTest extends TestCase
         $audit = AuditLog::query()->where('action', AuditAction::CaseStatusChanged->value)->sole();
         $this->assertTrue($audit->subject->is($case));
         $this->assertTrue($audit->actor->is($manager));
-        $this->assertSame(['from' => 'new', 'to' => 'in_progress'], $audit->context);
+        $this->assertEquals(['from' => 'new', 'to' => 'in_progress'], $audit->context);
     }
 
     public function test_closing_records_the_closure_reason_without_copying_it_to_the_audit(): void

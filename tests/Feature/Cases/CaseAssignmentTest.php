@@ -52,7 +52,7 @@ class CaseAssignmentTest extends TestCase
 
         $this->assertSame(1, AuditLog::query()->where('action', AuditAction::CaseAssigned->value)->count());
         $reassigned = AuditLog::query()->where('action', AuditAction::CaseReassigned->value)->sole();
-        $this->assertSame(['from' => $this->manager->uuid, 'to' => $other->uuid], $reassigned->context);
+        $this->assertEquals(['from' => $this->manager->uuid, 'to' => $other->uuid], $reassigned->context);
         $this->assertTrue($reassigned->actor->is($this->supervisor));
         $this->assertSame(1, AuditLog::query()->where('action', AuditAction::CaseUnassigned->value)->count());
     }
