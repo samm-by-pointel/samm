@@ -1,0 +1,15 @@
+/* Polices embarquées (charte §4, §11.2) : aucune requête vers un service tiers */
+@import '@fontsource-variable/fraunces/opsz.css';
+@import '@fontsource/atkinson-hyperlegible/400.css';
+@import '@fontsource/atkinson-hyperlegible/400-italic.css';
+@import '@fontsource/atkinson-hyperlegible/700.css';
+@import '@fontsource/jetbrains-mono/500.css';
+
+/* Bootstrap 5.3 et Bootstrap Icons */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap-icons/font/bootstrap-icons.min.css';
+
+/* Sàmm : jetons, branchement Bootstrap, composants */
+@import './tokens.css';
+@import './bootstrap-bridge.css';
+@import './components.css';
