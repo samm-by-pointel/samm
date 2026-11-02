@@ -10,6 +10,7 @@ use App\Modules\Cases\Models\CaseFile;
 use App\Modules\Reporting\Models\Report;
 use App\Modules\Users\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class AuditLogIndexTest extends TestCase
@@ -50,15 +51,18 @@ class AuditLogIndexTest extends TestCase
         AuditLog::factory()->withIp('203.0.113.77')->create(['action' => AuditAction::LoginSucceeded, 'actor_id' => $actor->id, 'subject_type' => $actor->getMorphClass(), 'subject_id' => $actor->id]);
         AuditLog::factory()->create(['action' => AuditAction::LoginFailed, 'context' => ['reason' => 'unknown_account']]);
 
-        $response = $this->actingAs($viewer)->get(route('manage.audit.index'))->assertOk();
+        $response = $this->actingAs($viewer)->get(route('manage.audit.index'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('manage/audit/Index')
+                ->has('entries.data', 2)
+                ->where('entries.data.0.action', 'Échec de connexion')
+                ->where('entries.data.0.actor', 'Système')
+                ->where('entries.data.1.action', 'Connexion réussie')
+                ->where('entries.data.1.actor', 'Moussa Sarr'));
 
-        $response->assertSee('Journal d\'audit')
-            ->assertSee('Connexion réussie')
-            ->assertSee('Échec de connexion')
-            ->assertSee('Moussa Sarr')
-            ->assertSee('Système')
-            ->assertDontSee('203.0.113.77')
-            ->assertDontSee('unknown_account');
+        $this->assertPageMissing($response, '203.0.113.77');
+        $this->assertPageMissing($response, 'unknown_account');
     }
 
     public function test_case_subjects_show_the_case_reference(): void
@@ -71,10 +75,9 @@ class AuditLogIndexTest extends TestCase
 
         $this->actingAs($viewer)->get(route('manage.audit.index'))
             ->assertOk()
-            ->assertSee('Dossier')
-            ->assertSee('Signalement')
-            ->assertSee('SMM-7K4Q-92XD')
-            ->assertSee(route('manage.cases.show', $case));
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('entries.data.0.subject', ['kind' => 'Signalement', 'label' => 'SMM-7K4Q-92XD', 'url' => null, 'code' => true])
+                ->where('entries.data.1.subject', ['kind' => 'Dossier', 'label' => 'SMM-7K4Q-92XD', 'url' => route('manage.cases.show', $case), 'code' => true]));
     }
 
     public function test_entries_can_be_filtered_by_action(): void
@@ -84,14 +87,13 @@ class AuditLogIndexTest extends TestCase
         AuditLog::factory()->create(['action' => AuditAction::LoginSucceeded]);
         AuditLog::factory()->create(['action' => AuditAction::Logout]);
 
-        $response = $this->actingAs($viewer)
+        $this->actingAs($viewer)
             ->get(route('manage.audit.index', ['action' => AuditAction::Logout->value]))
             ->assertOk()
-            ->assertSee('Déconnexion');
-
-        $listed = $response->viewData('entries');
-        $this->assertCount(1, $listed);
-        $this->assertSame(AuditAction::Logout, $listed->first()->action);
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('selectedAction', AuditAction::Logout->value)
+                ->has('entries.data', 1)
+                ->where('entries.data.0.action', 'Déconnexion'));
 
         $this->actingAs($viewer)
             ->get(route('manage.audit.index', ['action' => 'inconnue']))
@@ -103,12 +105,12 @@ class AuditLogIndexTest extends TestCase
         $this->actingAs($this->userWith(Permission::ViewAuditLog))
             ->get(route('manage.dashboard'))
             ->assertOk()
-            ->assertSee(route('manage.audit.index'));
+            ->assertInertia(fn (Assert $page) => $page->where('auth.can.viewAudit', true));
 
         $this->actingAs($this->userWith(Permission::ViewAssignedCases))
             ->get(route('manage.dashboard'))
             ->assertOk()
-            ->assertDontSee(route('manage.audit.index'));
+            ->assertInertia(fn (Assert $page) => $page->where('auth.can.viewAudit', false));
     }
 
     public function test_empty_log_shows_a_neutral_message(): void
@@ -119,6 +121,8 @@ class AuditLogIndexTest extends TestCase
         $this->actingAs($viewer)
             ->get(route('manage.audit.index'))
             ->assertOk()
-            ->assertSee('Aucune entrée pour le moment.');
+            ->assertInertia(fn (Assert $page) => $page
+                ->has('entries.data', 0)
+                ->where('translations.manage.audit.empty', 'Aucune entrée pour le moment.'));
     }
 }

@@ -1,8 +1,10 @@
 /**
  * Bouton « Quitter rapidement » - charte §12.2.
  * Vide les champs affichés puis remplace la page courante par une page neutre.
- * Sans JavaScript, le lien fonctionne seul (href). Ce bouton n'efface pas l'historique.
+ * Ce bouton n'efface pas l'historique.
  */
+import { router } from '@inertiajs/react';
+
 const DOUBLE_ESCAPE_DELAY_MS = 1500;
 
 function clearVisibleForms() {
@@ -16,26 +18,21 @@ function clearVisibleForms() {
     });
 }
 
-export function initQuickExit() {
-    const trigger = document.querySelector('[data-quick-exit]');
+export function leaveQuickly(url) {
+    clearVisibleForms();
+    // Rend illisibles les pages déjà visitées gardées dans l'historique chiffré.
+    router.clearHistory();
+    window.location.replace(url);
+}
 
-    if (!trigger) {
-        return;
-    }
-
-    const leave = () => {
-        clearVisibleForms();
-        window.location.replace(trigger.dataset.quickExitUrl);
-    };
-
-    trigger.addEventListener('click', (event) => {
-        event.preventDefault();
-        leave();
-    });
-
+/**
+ * Échap pressée deux fois de suite : même effet que le bouton.
+ * Renvoie la fonction de nettoyage de l'écouteur.
+ */
+export function listenForDoubleEscape(url) {
     let lastEscapeAt = 0;
 
-    document.addEventListener('keydown', (event) => {
+    const onKeyDown = (event) => {
         if (event.key !== 'Escape') {
             return;
         }
@@ -43,9 +40,13 @@ export function initQuickExit() {
         const now = Date.now();
 
         if (now - lastEscapeAt < DOUBLE_ESCAPE_DELAY_MS) {
-            leave();
+            leaveQuickly(url);
         }
 
         lastEscapeAt = now;
-    });
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+
+    return () => document.removeEventListener('keydown', onKeyDown);
 }

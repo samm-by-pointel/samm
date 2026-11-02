@@ -8,6 +8,7 @@ use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class OrganizationLogoTest extends TestCase
@@ -53,8 +54,9 @@ class OrganizationLogoTest extends TestCase
         $this->get(route('organization.logo'))->assertOk()->assertHeader('Cache-Control', 'max-age=3600, public');
 
         auth()->logout();
-        $this->get(route('public.home'))->assertSee('samm-org-logo', false)->assertSee(route('organization.logo', ['v' => $organization->updated_at->timestamp]), false);
-        $this->actingAs($this->admin)->get(route('manage.dashboard'))->assertSee('samm-org-logo', false);
+        $logoUrl = route('organization.logo', ['v' => $organization->updated_at->timestamp]);
+        $this->get(route('public.home'))->assertInertia(fn (Assert $page) => $page->where('site.logoUrl', $logoUrl));
+        $this->actingAs($this->admin)->get(route('manage.dashboard'))->assertInertia(fn (Assert $page) => $page->where('site.logoUrl', $logoUrl));
     }
 
     public function test_svg_and_disguised_files_are_refused(): void

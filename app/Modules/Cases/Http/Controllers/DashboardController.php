@@ -4,21 +4,27 @@ namespace App\Modules\Cases\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Cases\Models\CaseFile;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class DashboardController extends Controller
 {
     /**
      * Entry page of the management area: a few counters, no content.
      */
-    public function index(Request $request): View
+    public function index(Request $request): Response
     {
         $user = $request->user();
         $canViewCases = $user->can('viewAny', CaseFile::class);
 
-        return view('manage.dashboard', [
+        return Inertia::render('manage/Dashboard', [
             'canViewCases' => $canViewCases,
+            'urls' => [
+                'mine' => route('manage.cases.index', ['assignment' => 'mine']),
+                'unassigned' => route('manage.cases.index', ['assignment' => 'unassigned']),
+                'all' => route('manage.cases.index'),
+            ],
             'counters' => $canViewCases ? [
                 'mine_open' => CaseFile::query()->open()->assignedTo($user)->count(),
                 'unassigned_open' => CaseFile::query()->visibleTo($user)->open()->unassigned()->count(),

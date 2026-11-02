@@ -5,8 +5,9 @@ namespace App\Modules\Workflow\Enums;
 /**
  * The eight case statuses of the specification (§8).
  *
- * Badge colors are locked for every organization (charter §12.7) and
- * "Archived" is never shown to the public: the reporting person sees "Closed".
+ * Badge colors are locked for every organization (charter §12.7, see the
+ * StatusBadge component) and "Archived" is never shown to the public: the
+ * reporting person sees "Closed".
  */
 enum CaseStatus: string
 {
@@ -35,23 +36,6 @@ enum CaseStatus: string
     public function publicEquivalent(): self
     {
         return $this === self::Archived ? self::Closed : $this;
-    }
-
-    /**
-     * Charter §12.7 badge class, locked for every organization.
-     */
-    public function badgeClass(): string
-    {
-        return match ($this) {
-            self::New => 'samm-badge-nouveau',
-            self::ToQualify => 'samm-badge-qualifier',
-            self::InProgress => 'samm-badge-traitement',
-            self::AwaitingInformation => 'samm-badge-attente',
-            self::Referred => 'samm-badge-oriente',
-            self::Resolving => 'samm-badge-resolution',
-            self::Closed => 'samm-badge-cloture',
-            self::Archived => 'samm-badge-archive',
-        };
     }
 
     public function isOpen(): bool

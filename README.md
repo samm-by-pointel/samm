@@ -15,7 +15,7 @@ Sàmm est édité par Pointel SAS et publié sous licence **GNU AGPL‑3.0** (vo
 
 ## Ce que fait Sàmm aujourd'hui
 
-- **Espace public** : formulaire de signalement en six étapes utilisable sans JavaScript, bouton « Quitter rapidement » sur chaque page, bloc « En cas de danger immédiat » avec les numéros configurés par l'organisation, interface en français et en anglais.
+- **Espace public** : formulaire de signalement en six étapes, brouillon conservé côté serveur, bouton « Quitter rapidement » sur chaque page, bloc « En cas de danger immédiat » avec les numéros configurés par l'organisation, interface en français et en anglais.
 - **Suivi par codes** : un identifiant de dossier et un secret de récupération, affichés une seule fois, sans caractères ambigus ; consultation du statut, échanges avec la personne en charge.
 - **Espace de gestion** : connexion sécurisée (verrouillage après échecs, authentification à deux facteurs), rôles et permissions granulaires vérifiés côté serveur, liste et fiche des dossiers selon l'affectation, affectation, statuts et historique, priorité, notes internes, réponses à la personne, journal d'audit.
 - **Administration** : identité et nom du dispositif, logo, couleurs avec contrôle de contraste (WCAG AA), titre d'onglet neutre, page de sortie rapide, langue par défaut, numéros d'urgence et catégories de signalement, sans toucher au code.
@@ -65,13 +65,22 @@ La suite couvre notamment les contrôles d'accès (rôles, affectation, identit�
 
 ## Architecture
 
-Monolithe Laravel modulaire : chaque module vit dans `app/Modules/<Module>/` (Core, Organizations, Users, AccessControl, Audit, Workflow, Reporting, IdentityVault, Privacy, Tracking, Messaging, Cases). Les vues sont groupées par espace (`resources/views/public`, `manage`), les textes passent tous par les fichiers de langue (`lang/fr`, `lang/en`) pour préparer d'autres langues.
+Monolithe Laravel modulaire : chaque module vit dans `app/Modules/<Module>/` (Core, Organizations, Users, AccessControl, Audit, Workflow, Reporting, IdentityVault, Privacy, Tracking, Messaging, Cases). L'interface est en React, servie par Inertia : les contrôleurs Laravel envoient à chaque page des données listées champ par champ, et les pages vivent dans `resources/js/pages` (`public`, `report`, `tracking`, `auth`, `manage`). Les textes passent tous par les fichiers de langue (`lang/fr`, `lang/en`), partagés avec React, pour préparer d'autres langues.
 
 ## Contribuer
 
 Les contributions sont bienvenues. Avant de proposer une modification, gardez à l'esprit que ce logiciel s'adresse à des personnes vulnérables : la confidentialité, la sécurité et la neutralité passent avant tout le reste. Chaque fonctionnalité est livrée avec ses tests, en particulier pour les autorisations.
 
 Pour signaler une faille de sécurité, suivez la procédure décrite dans `SECURITY.md`. Ne la publiez pas dans une issue.
+
+## Photos
+
+Les photos de la page d'accueil (`public/images/site/`) proviennent d'Unsplash et sont utilisées sous la [licence Unsplash](https://unsplash.com/license) :
+
+- `accueil.jpg` : [UK Black Tech](https://unsplash.com/photos/t_5XoZ3hE-E)
+- `equipe.jpg` : [WOCinTech Chat](https://unsplash.com/photos/UcZcsHSp8o4)
+
+Une organisation peut les remplacer par ses propres photos en gardant les mêmes noms de fichiers ; sans fichier, la page s'en passe.
 
 ## Licence
 

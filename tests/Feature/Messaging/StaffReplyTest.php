@@ -10,6 +10,7 @@ use App\Modules\Users\Models\User;
 use Database\Factories\TrackingCredentialFactory;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class StaffReplyTest extends TestCase
@@ -43,11 +44,12 @@ class StaffReplyTest extends TestCase
 
         auth()->logout();
         $this->post(route('tracking.authenticate'), ['reference' => 'SMM-7K4Q-92XD', 'secret' => TrackingCredentialFactory::SECRET]);
-        $this->get(route('tracking.show'))
+        $response = $this->get(route('tracking.show'))
             ->assertOk()
-            ->assertSee('pouvez-vous préciser la période')
-            ->assertSee('Gestionnaire du dossier')
-            ->assertDontSee('Moussa Sarr');
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('messages.0.body', 'Bonjour, pouvez-vous préciser la période des faits ?')
+                ->where('messages.0.author', 'Gestionnaire du dossier'));
+        $this->assertPageMissing($response, 'Moussa Sarr');
     }
 
     public function test_reply_creates_the_conversation_if_missing_and_requires_the_permission(): void

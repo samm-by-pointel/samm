@@ -9,8 +9,10 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Inertia\Inertia;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Fortify;
 
@@ -50,11 +52,25 @@ class FortifyServiceProvider extends ServiceProvider
          */
         Password::defaults(fn (): Password => Password::min(12)->mixedCase()->numbers());
 
-        Fortify::loginView(fn () => view('auth.login'));
-        Fortify::requestPasswordResetLinkView(fn () => view('auth.forgot-password'));
-        Fortify::resetPasswordView(fn (Request $request) => view('auth.reset-password', ['request' => $request]));
-        Fortify::twoFactorChallengeView(fn () => view('auth.two-factor-challenge'));
-        Fortify::confirmPasswordView(fn () => view('auth.confirm-password'));
+        Fortify::loginView(fn () => Inertia::render('auth/Login', [
+            'action' => route('login'),
+            'forgotUrl' => Route::has('password.request') ? route('password.request') : null,
+        ]));
+        Fortify::requestPasswordResetLinkView(fn () => Inertia::render('auth/ForgotPassword', [
+            'action' => route('password.email'),
+            'loginUrl' => route('login'),
+        ]));
+        Fortify::resetPasswordView(fn (Request $request) => Inertia::render('auth/ResetPassword', [
+            'action' => route('password.update'),
+            'token' => $request->route('token'),
+            'email' => (string) $request->query('email', ''),
+        ]));
+        Fortify::twoFactorChallengeView(fn () => Inertia::render('auth/TwoFactorChallenge', [
+            'action' => route('two-factor.login'),
+        ]));
+        Fortify::confirmPasswordView(fn () => Inertia::render('auth/ConfirmPassword', [
+            'action' => route('password.confirm'),
+        ]));
 
         RateLimiter::for('two-factor', function (Request $request): Limit {
             return Limit::perMinute(5)->by($request->session()->get('login.id'));

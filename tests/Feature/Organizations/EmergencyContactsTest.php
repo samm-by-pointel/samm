@@ -4,6 +4,7 @@ namespace Tests\Feature\Organizations;
 
 use App\Modules\Organizations\Models\EmergencyContact;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class EmergencyContactsTest extends TestCase
@@ -25,32 +26,38 @@ class EmergencyContactsTest extends TestCase
         EmergencyContact::factory()->create(['label' => ['fr' => 'Police', 'en' => 'Police'], 'phone_number' => '17', 'position' => 1]);
         EmergencyContact::factory()->inactive()->create(['label' => ['fr' => 'Service désactivé', 'en' => 'Disabled service'], 'phone_number' => '99', 'position' => 0]);
 
-        $response = $this->get(route('public.home'))->assertOk();
+        $response = $this->get(route('public.home'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->has('emergencyContacts', 2)
+                ->where('emergencyContacts.0.label', 'Police')
+                ->where('emergencyContacts.0.number', '17')
+                ->where('emergencyContacts.0.dialable', '17')
+                ->where('emergencyContacts.1.label', 'Second service')
+                ->where('emergencyContacts.1.number', '18'));
 
-        $response->assertSee('En cas de danger immédiat')
-            ->assertSeeInOrder(['Police', '17', 'Second service', '18'])
-            ->assertSee('href="tel:17"', false)
-            ->assertDontSee('Service désactivé')
-            ->assertDontSee('tel:99', false);
+        $this->assertPageMissing($response, 'Service désactivé');
     }
 
     public function test_label_follows_the_current_language(): void
     {
         EmergencyContact::factory()->create(['label' => ['fr' => 'Pompiers', 'en' => 'Fire brigade'], 'phone_number' => '18']);
 
-        $this->withSession(['locale' => 'en'])
+        $response = $this->withSession(['locale' => 'en'])
             ->get(route('public.home'))
             ->assertOk()
-            ->assertSee('In case of immediate danger')
-            ->assertSee('Fire brigade')
-            ->assertDontSee('Pompiers');
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('translations.public.emergency.title', 'In case of immediate danger')
+                ->where('emergencyContacts.0.label', 'Fire brigade'));
+
+        $this->assertPageMissing($response, 'Pompiers');
     }
 
     public function test_block_is_hidden_without_any_contact(): void
     {
         $this->get(route('public.home'))
             ->assertOk()
-            ->assertDontSee('En cas de danger immédiat');
+            ->assertInertia(fn (Assert $page) => $page->has('emergencyContacts', 0));
     }
 
     public function test_dialable_number_keeps_digits_and_plus_sign_only(): void

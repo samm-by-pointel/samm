@@ -14,6 +14,7 @@ use Database\Factories\TrackingCredentialFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Testing\TestResponse;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class TrackingAccessTest extends TestCase
@@ -43,31 +44,38 @@ class TrackingAccessTest extends TestCase
     {
         $this->get(route('tracking.login'))
             ->assertOk()
-            ->assertSee('Suivre mon dossier')
-            ->assertSee('Secret de récupération')
-            ->assertSee('Quitter rapidement');
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('tracking/Login')
+                ->where('action', route('tracking.authenticate'))
+                ->where('translations.tracking.login.secret', 'Secret de récupération')
+                ->where('site.quickExitUrl', config('samm.quick_exit_url')));
 
-        $this->get(route('public.home'))->assertSee(route('tracking.login'));
+        $this->get(route('public.home'))
+            ->assertInertia(fn (Assert $page) => $page->where('routes.trackingLogin', route('tracking.login')));
     }
 
     public function test_valid_codes_open_the_case_with_its_public_status_only(): void
     {
         $this->signIn('smm 7k4q 92xd', strtolower('rf3m-w8tz-k2pa-6hne'))->assertRedirect(route('tracking.show'));
 
-        $this->get(route('tracking.show'))
+        $response = $this->get(route('tracking.show'))
             ->assertOk()
-            ->assertSee('SMM-7K4Q-92XD')
-            ->assertSee('Nouveau')
-            ->assertSee('Échanges avec la personne en charge')
-            ->assertDontSee('Priorité haute')
-            ->assertDontSee($this->report->identity->full_name);
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('tracking/Show')
+                ->where('report.reference', 'SMM-7K4Q-92XD')
+                ->where('report.status.label', 'Nouveau')
+                ->missing('report.priority'));
+
+        $this->assertPageMissing($response, 'Priorité haute');
+        $this->assertPageMissing($response, $this->report->identity->full_name, 'L\'identité n\'apparaît jamais dans l\'espace de suivi.');
     }
 
     public function test_quick_exit_is_present_in_the_tracking_space(): void
     {
         $this->signIn();
 
-        $this->get(route('tracking.show'))->assertSee('Quitter rapidement');
+        $this->get(route('tracking.show'))
+            ->assertInertia(fn (Assert $page) => $page->where('site.quickExitUrl', config('samm.quick_exit_url')));
     }
 
     public function test_wrong_secret_unknown_reference_and_locked_credential_give_the_same_message(): void
@@ -107,7 +115,7 @@ class TrackingAccessTest extends TestCase
             $this->signIn(secret: 'RF3M-W8TZ-K2PA-0000')->assertStatus(302);
         }
 
-        $this->signIn()->assertStatus(429)->assertSee('Trop de tentatives');
+        $this->signIn()->assertStatus(429)->assertInertia(fn (Assert $page) => $page->component('Error')->where('status', 429));
     }
 
     public function test_tracking_session_expires_after_idle_period(): void
@@ -137,10 +145,13 @@ class TrackingAccessTest extends TestCase
         $this->report->case->forceFill(['status' => CaseStatus::Archived])->save();
         $this->signIn();
 
-        $this->get(route('tracking.show'))
+        $response = $this->get(route('tracking.show'))
             ->assertOk()
-            ->assertSee('Clôturé')
-            ->assertDontSee('Archivé');
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('report.status.value', 'closed')
+                ->where('report.status.label', 'Clôturé'));
+
+        $this->assertPageMissing($response, 'Archivé');
     }
 
     public function test_accesses_are_audited_without_ip_nor_codes(): void

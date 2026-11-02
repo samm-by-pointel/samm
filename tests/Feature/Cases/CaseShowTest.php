@@ -15,6 +15,7 @@ use App\Modules\Users\Models\User;
 use App\Modules\Workflow\Actions\ChangeCaseStatus;
 use App\Modules\Workflow\Enums\CaseStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class CaseShowTest extends TestCase
@@ -48,12 +49,13 @@ class CaseShowTest extends TestCase
 
         $this->actingAs($manager)->get(route('manage.cases.show', $case))
             ->assertOk()
-            ->assertSee('Récit fictif détaillé.')
-            ->assertSee('Lieu fictif de test')
-            ->assertSee('Alouette')
-            ->assertSee('Pseudonyme')
-            ->assertSee('Faits rapportés')
-            ->assertDontSee('Priorité haute');
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('manage/cases/Show')
+                ->where('report.description', 'Récit fictif détaillé.')
+                ->where('report.location', 'Lieu fictif de test')
+                ->where('case.reporter', 'Alouette')
+                ->where('case.confidentiality', 'Pseudonyme')
+                ->where('case.priority.isHigh', false));
     }
 
     public function test_anonymous_reporter_is_named_neutrally_and_identity_block_says_none(): void
@@ -63,11 +65,13 @@ class CaseShowTest extends TestCase
 
         $this->actingAs($supervisor)->get(route('manage.cases.show', $case))
             ->assertOk()
-            ->assertSee('Personne anonyme')
-            ->assertSee('Priorité haute')
-            ->assertSee('Danger immédiat signalé par la personne')
-            ->assertSee('Aucune identité')
-            ->assertDontSee('Afficher (motif requis)');
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('case.reporter', 'Personne anonyme')
+                ->where('case.priority.label', 'Priorité haute')
+                ->where('case.priority.isHigh', true)
+                ->where('case.immediateDanger', true)
+                ->where('identity.allowed', false)
+                ->where('identity.level', 'Anonyme'));
     }
 
     public function test_viewing_a_case_is_audited_and_marks_reporter_messages_read(): void
@@ -80,11 +84,14 @@ class CaseShowTest extends TestCase
 
         $this->assertSame(1, $conversation->unreadForStaff());
 
-        $this->actingAs($supervisor)->get(route('manage.cases.show', $case))
+        $response = $this->actingAs($supervisor)->get(route('manage.cases.show', $case))
             ->assertOk()
-            ->assertSee('Précision fictive de la personne')
-            ->assertSee('Gestionnaire du dossier')
-            ->assertDontSee('Moussa Sarr');
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('messages.0.body', 'Précision fictive de la personne')
+                ->where('messages.0.fromReporter', true)
+                ->where('messages.1.author', 'Gestionnaire du dossier'));
+
+        $this->assertPageMissing($response, 'Moussa Sarr');
 
         $this->assertSame(0, $conversation->unreadForStaff());
 
@@ -102,15 +109,17 @@ class CaseShowTest extends TestCase
 
         $this->actingAs($supervisor)->get(route('manage.cases.show', $case))
             ->assertOk()
-            ->assertSee('Historique des statuts')
-            ->assertSee('En cours de traitement')
-            ->assertSee('depuis Nouveau')
-            ->assertSee($supervisor->name);
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('histories', fn ($histories) => collect($histories)->contains(fn ($history) => $history['to'] === 'En cours de traitement'
+                    && $history['from'] === 'Nouveau'
+                    && $history['by'] === $supervisor->name)));
     }
 
     public function test_header_link_to_cases_follows_the_permission(): void
     {
-        $this->actingAs($this->userWith(Permission::ViewAssignedCases))->get(route('manage.dashboard'))->assertSee(route('manage.cases.index'));
-        $this->actingAs($this->userWith(Permission::ViewAuditLog))->get(route('manage.dashboard'))->assertDontSee(route('manage.cases.index'));
+        $this->actingAs($this->userWith(Permission::ViewAssignedCases))->get(route('manage.dashboard'))
+            ->assertInertia(fn (Assert $page) => $page->where('auth.can.viewCases', true));
+        $this->actingAs($this->userWith(Permission::ViewAuditLog))->get(route('manage.dashboard'))
+            ->assertInertia(fn (Assert $page) => $page->where('auth.can.viewCases', false));
     }
 }

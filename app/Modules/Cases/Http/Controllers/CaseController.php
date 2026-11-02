@@ -10,16 +10,17 @@ use App\Modules\Cases\Services\CasePageData;
 use App\Modules\Messaging\Enums\MessageAuthor;
 use App\Modules\Reporting\Models\ReportCategory;
 use App\Modules\Workflow\Enums\CaseStatus;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class CaseController extends Controller
 {
     private const PER_PAGE = 25;
 
-    public function index(Request $request): View
+    public function index(Request $request, CasePageData $pageData): Response
     {
         Gate::authorize('viewAny', CaseFile::class);
 
@@ -57,12 +58,22 @@ class CaseController extends Controller
             ->paginate(self::PER_PAGE)
             ->withQueryString();
 
-        return view('manage.cases.index', [
-            'cases' => $cases,
-            'filters' => $filters,
-            'statuses' => CaseStatus::cases(),
-            'priorities' => CasePriority::cases(),
-            'categories' => ReportCategory::query()->active()->ordered()->get(),
+        return Inertia::render('manage/cases/Index', [
+            'cases' => $cases->through(fn (CaseFile $case): array => [
+                'url' => route('manage.cases.show', $case),
+                'reference' => $case->report->reference,
+                'category' => $case->report->category->name(),
+                'status' => $pageData->status($case->status),
+                'priority' => ['label' => $case->priority->label(), 'isHigh' => $case->priority->isHigh()],
+                'assignee' => $case->assignee?->name,
+                'submittedAt' => $case->report->submitted_at?->toIso8601String(),
+                'unread' => (int) ($case->report->conversation?->unread_for_staff_count ?? 0),
+            ]),
+            'filters' => (object) $filters,
+            'statuses' => collect(CaseStatus::cases())->map(fn (CaseStatus $status): array => $pageData->status($status)),
+            'priorities' => collect(CasePriority::cases())->map(fn (CasePriority $priority): array => ['value' => $priority->value, 'label' => $priority->label()]),
+            'categories' => ReportCategory::query()->active()->ordered()->get()
+                ->map(fn (ReportCategory $category): array => ['value' => $category->uuid, 'label' => $category->name()]),
         ]);
     }
 
@@ -70,7 +81,7 @@ class CaseController extends Controller
      * Case page: content, status history, messages. The identity stays masked;
      * every view is recorded in the audit log.
      */
-    public function show(Request $request, CaseFile $case, CasePageData $pageData): View
+    public function show(Request $request, CaseFile $case, CasePageData $pageData): Response
     {
         Gate::authorize('view', $case);
 
@@ -79,6 +90,6 @@ class CaseController extends Controller
 
         CaseViewed::dispatch($case, $request->user());
 
-        return view('manage.cases.show', $pageData->for($case, $request->user()));
+        return Inertia::render('manage/cases/Show', $pageData->for($case, $request->user()));
     }
 }

@@ -70,18 +70,6 @@ enum ReportStep: string
         return __('report_form.steps.'.$this->value);
     }
 
-    public function view(): string
-    {
-        return 'public.report.'.match ($this) {
-            self::Situation => 'situation',
-            self::Confidentiality => 'confidentiality',
-            self::Description => 'description',
-            self::People => 'people',
-            self::Attachments => 'attachments',
-            self::Consent => 'consent',
-        };
-    }
-
     /**
      * Validation rules of the step. Only the description is ever required:
      * nothing that could stop a person from reporting is mandatory (§6, step 3).

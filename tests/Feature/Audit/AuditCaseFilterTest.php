@@ -9,6 +9,7 @@ use App\Modules\Workflow\Actions\ChangeCaseStatus;
 use App\Modules\Workflow\Enums\CaseStatus;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class AuditCaseFilterTest extends TestCase
@@ -31,18 +32,17 @@ class AuditCaseFilterTest extends TestCase
         app(ChangeCaseStatus::class)->handle($case, CaseStatus::InProgress, $supervisor);
         app(ChangeCaseStatus::class)->handle($otherCase, CaseStatus::Closed, $supervisor, 'Motif fictif');
 
-        $response = $this->actingAs($supervisor)->get(route('manage.audit.index', ['case' => $case->uuid]))
+        $this->actingAs($supervisor)->get(route('manage.audit.index', ['case' => $case->uuid]))
             ->assertOk()
-            ->assertSee('Entrées du dossier SMM-7K4Q-92XD')
-            ->assertSee(route('manage.cases.show', $case));
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('filteredCase.reference', 'SMM-7K4Q-92XD')
+                ->where('filteredCase.url', route('manage.cases.show', $case))
+                ->has('entries.data', 2)
+                ->where('entries.data.0.subject.label', 'SMM-7K4Q-92XD')
+                ->where('entries.data.1.subject.label', 'SMM-7K4Q-92XD'));
 
-        $entries = $response->viewData('entries');
-        $this->assertCount(2, $entries, 'Une consultation et un changement de statut.');
-        foreach ($entries as $entry) {
-            $this->assertTrue($entry->subject->is($case));
-        }
-
-        $this->actingAs($supervisor)->get(route('manage.cases.show', $case))->assertSee(route('manage.audit.index', ['case' => $case->uuid]));
+        $this->actingAs($supervisor)->get(route('manage.cases.show', $case))
+            ->assertInertia(fn (Assert $page) => $page->where('urls.audit', route('manage.audit.index', ['case' => $case->uuid])));
         $this->actingAs($supervisor)->get(route('manage.audit.index', ['case' => 'inconnu']))->assertSessionHasErrors('case');
     }
 }

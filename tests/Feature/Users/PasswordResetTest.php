@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class PasswordResetTest extends TestCase
@@ -43,7 +44,10 @@ class PasswordResetTest extends TestCase
 
         $this->get(route('password.reset', ['token' => $token, 'email' => $user->email]))
             ->assertOk()
-            ->assertSee('Choisir un nouveau mot de passe');
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('auth/ResetPassword')
+                ->where('token', $token)
+                ->where('email', $user->email));
 
         $this->post(route('password.update'), [
             'token' => $token,

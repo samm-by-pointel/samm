@@ -28,24 +28,6 @@ class CaseStatusTest extends TestCase
         $this->assertSame('En cours de traitement', CaseStatus::InProgress->publicLabel());
     }
 
-    public function test_badge_classes_follow_the_locked_charter_mapping(): void
-    {
-        $expected = [
-            'new' => 'samm-badge-nouveau',
-            'to_qualify' => 'samm-badge-qualifier',
-            'in_progress' => 'samm-badge-traitement',
-            'awaiting_information' => 'samm-badge-attente',
-            'referred' => 'samm-badge-oriente',
-            'resolving' => 'samm-badge-resolution',
-            'closed' => 'samm-badge-cloture',
-            'archived' => 'samm-badge-archive',
-        ];
-
-        foreach (CaseStatus::cases() as $status) {
-            $this->assertSame($expected[$status->value], $status->badgeClass());
-        }
-    }
-
     public function test_open_closed_and_archived_helpers(): void
     {
         foreach ([CaseStatus::New, CaseStatus::ToQualify, CaseStatus::InProgress, CaseStatus::AwaitingInformation, CaseStatus::Referred, CaseStatus::Resolving] as $status) {

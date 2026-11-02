@@ -8,6 +8,7 @@ use App\Modules\Organizations\Models\EmergencyContact;
 use App\Modules\Users\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class EmergencyContactsAdminTest extends TestCase
@@ -39,7 +40,11 @@ class EmergencyContactsAdminTest extends TestCase
         $this->assertEquals(['fr' => 'Pompiers', 'en' => 'Fire brigade'], $pompiers->label);
 
         auth()->logout();
-        $this->get(route('public.home'))->assertSeeInOrder(['Police', '17', 'Pompiers', '18']);
+        $this->get(route('public.home'))->assertInertia(fn (Assert $page) => $page
+            ->where('emergencyContacts.0.label', 'Police')
+            ->where('emergencyContacts.0.number', '17')
+            ->where('emergencyContacts.1.label', 'Pompiers')
+            ->where('emergencyContacts.1.number', '18'));
 
         $this->actingAs($this->admin)->put(route('manage.organization.emergency.update', $pompiers), ['label' => ['fr' => 'Sapeurs-pompiers'], 'phone_number' => '18', 'position' => 0])->assertRedirect();
         $pompiers->refresh();
@@ -47,7 +52,8 @@ class EmergencyContactsAdminTest extends TestCase
         $this->assertFalse($pompiers->is_active, 'Case non cochée = désactivé.');
 
         auth()->logout();
-        $this->get(route('public.home'))->assertSee('Police')->assertDontSee('Sapeurs-pompiers');
+        $response = $this->get(route('public.home'))->assertInertia(fn (Assert $page) => $page->has('emergencyContacts', 1)->where('emergencyContacts.0.label', 'Police'));
+        $this->assertPageMissing($response, 'Sapeurs-pompiers');
 
         $this->actingAs($this->admin)->delete(route('manage.organization.emergency.destroy', $pompiers))->assertRedirect()->assertSessionHas('status', 'Numéro d\'urgence supprimé.');
         $this->assertDatabaseCount('emergency_contacts', 1);

@@ -12,6 +12,7 @@ use App\Modules\Users\Models\User;
 use Database\Factories\TrackingCredentialFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class PublicMessagingTest extends TestCase
@@ -45,10 +46,11 @@ class PublicMessagingTest extends TestCase
 
         $this->get(route('tracking.show'))
             ->assertOk()
-            ->assertSee('Précision fictive.')
-            ->assertSee('Seconde ligne.')
-            ->assertSee('samm-msg-me', false)
-            ->assertSee('Vous ·');
+            ->assertInertia(fn (Assert $page) => $page
+                ->has('messages', 1)
+                ->where('messages.0.body', "Précision fictive.\nSeconde ligne.")
+                ->where('messages.0.fromReporter', true)
+                ->where('messages.0.author', 'Vous'));
 
         $this->assertStringNotContainsString('Précision', DB::table('messages')->value('body'));
         $this->assertSame(MessageAuthor::Reporter, $this->conversation->messages()->sole()->author_type);
@@ -61,12 +63,14 @@ class PublicMessagingTest extends TestCase
 
         $this->assertSame(1, $this->conversation->unreadForReporter());
 
-        $this->get(route('tracking.show'))
+        $response = $this->get(route('tracking.show'))
             ->assertOk()
-            ->assertSee('pouvez-vous préciser la période')
-            ->assertSee('Gestionnaire du dossier')
-            ->assertSee('samm-msg-them', false)
-            ->assertDontSee('Moussa Sarr');
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('messages.0.body', 'Bonjour, pouvez-vous préciser la période ?')
+                ->where('messages.0.fromReporter', false)
+                ->where('messages.0.author', 'Gestionnaire du dossier'));
+
+        $this->assertPageMissing($response, 'Moussa Sarr', 'Côté public, l\'équipe est signée par son rôle, jamais par un nom.');
 
         $this->assertSame(0, $this->conversation->unreadForReporter());
     }

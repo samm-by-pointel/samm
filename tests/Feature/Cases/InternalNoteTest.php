@@ -10,6 +10,7 @@ use Database\Factories\TrackingCredentialFactory;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class InternalNoteTest extends TestCase
@@ -37,11 +38,15 @@ class InternalNoteTest extends TestCase
             ->assertSessionHas('status', 'Note interne ajoutée.');
 
         $this->assertStringNotContainsString('fictive', DB::table('internal_notes')->value('body'));
-        $this->actingAs($manager)->get(route('manage.cases.show', $case))->assertSee('Note interne fictive à vérifier')->assertSee('Moussa Sarr');
+        $this->actingAs($manager)->get(route('manage.cases.show', $case))
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('notes.0.body', 'Note interne fictive à vérifier')
+                ->where('notes.0.author', 'Moussa Sarr'));
 
         auth()->logout();
         $this->post(route('tracking.authenticate'), ['reference' => 'SMM-7K4Q-92XD', 'secret' => TrackingCredentialFactory::SECRET]);
-        $this->get(route('tracking.show'))->assertOk()->assertDontSee('Note interne fictive');
+        $response = $this->get(route('tracking.show'))->assertOk();
+        $this->assertPageMissing($response, 'Note interne fictive', 'Une note interne n\'est jamais montrée à la personne qui signale.');
     }
 
     public function test_note_requires_the_permission_and_a_body(): void

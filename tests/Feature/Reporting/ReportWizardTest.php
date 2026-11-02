@@ -6,6 +6,7 @@ use App\Modules\Organizations\Models\EmergencyContact;
 use App\Modules\Reporting\Enums\ReportStep;
 use App\Modules\Reporting\Models\ReportCategory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class ReportWizardTest extends TestCase
@@ -47,15 +48,18 @@ class ReportWizardTest extends TestCase
     {
         $this->get(route('report.start'))
             ->assertOk()
-            ->assertSee('Faire un signalement')
-            ->assertSee('Ce que nous ne recueillons pas')
-            ->assertSee('Quitter rapidement')
-            ->assertSee(route('report.step.show', ReportStep::Situation));
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('report/Start')
+                ->where('hasDraft', false)
+                ->where('beginUrl', route('report.step.show', ReportStep::Situation))
+                ->where('translations.report_form.start.not_collected_title', 'Ce que nous ne recueillons pas')
+                ->where('site.quickExitUrl', config('samm.quick_exit_url')));
     }
 
     public function test_home_page_links_to_the_form(): void
     {
-        $this->get(route('public.home'))->assertSee(route('report.start'));
+        $this->get(route('public.home'))
+            ->assertInertia(fn (Assert $page) => $page->where('routes.reportStart', route('report.start')));
     }
 
     public function test_first_step_lists_only_active_categories_in_order(): void
@@ -63,13 +67,17 @@ class ReportWizardTest extends TestCase
         ReportCategory::factory()->inactive()->create(['name' => ['fr' => 'Catégorie désactivée', 'en' => 'Disabled'], 'position' => 0]);
         ReportCategory::factory()->create(['name' => ['fr' => 'Discrimination', 'en' => 'Discrimination'], 'position' => 2]);
 
-        $this->get($this->step(ReportStep::Situation))
+        $response = $this->get($this->step(ReportStep::Situation))
             ->assertOk()
-            ->assertSeeInOrder(['Harcèlement moral', 'Discrimination'])
-            ->assertDontSee('Catégorie désactivée')
-            ->assertSee('Étape 1 sur 6')
-            ->assertSee('aria-current="step"', false)
-            ->assertSee('Quitter rapidement');
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('report/Step')
+                ->where('step', 'situation')
+                ->has('steps', 6)
+                ->has('categories', 2)
+                ->where('categories.0.label', 'Harcèlement moral')
+                ->where('categories.1.label', 'Discrimination'));
+
+        $this->assertPageMissing($response, 'Catégorie désactivée');
     }
 
     public function test_inactive_or_unknown_category_is_refused(): void
@@ -112,22 +120,26 @@ class ReportWizardTest extends TestCase
 
         $this->get($this->step(ReportStep::Situation))
             ->assertOk()
-            ->assertSee('value="'.$this->category->uuid.'" checked', false);
+            ->assertInertia(fn (Assert $page) => $page->where('values.category', $this->category->uuid));
 
         $this->get($this->step(ReportStep::Confidentiality))
             ->assertOk()
-            ->assertSee('value="pseudonymous" checked', false)
-            ->assertSee('value="Alouette"', false);
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('values.confidentiality_level', 'pseudonymous')
+                ->where('values.pseudonym', 'Alouette'));
     }
 
-    public function test_confidentiality_step_marks_the_conditional_blocks_with_their_level(): void
+    public function test_confidentiality_step_offers_the_three_levels(): void
     {
         $this->complete(ReportStep::Situation, ['category' => $this->category->uuid]);
 
         $this->get($this->step(ReportStep::Confidentiality))
             ->assertOk()
-            ->assertSee('class="samm-conditional mt-4" data-level="pseudonymous"', false)
-            ->assertSee('class="samm-conditional mt-4" data-level="confidential"', false);
+            ->assertInertia(fn (Assert $page) => $page
+                ->has('levels', 3)
+                ->where('levels.0.value', 'anonymous')
+                ->where('levels.1.value', 'pseudonymous')
+                ->where('levels.2.value', 'confidential'));
     }
 
     public function test_pseudonym_is_required_only_for_the_pseudonymous_level(): void
@@ -189,10 +201,16 @@ class ReportWizardTest extends TestCase
         $this->completeFirstTwoSteps();
 
         $this->complete(ReportStep::Description, ['description' => 'Récit fictif.', 'immediate_danger' => '1']);
-        $this->get($this->step(ReportStep::People))->assertOk()->assertSee('En cas de danger immédiat')->assertSee('tel:17', false);
+        $this->get($this->step(ReportStep::People))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('immediateDanger', true)
+                ->where('emergencyContacts.0.dialable', '17'));
 
         $this->complete(ReportStep::Description, ['description' => 'Récit fictif.', 'immediate_danger' => '0']);
-        $this->get($this->step(ReportStep::People))->assertOk()->assertDontSee('En cas de danger immédiat');
+        $this->get($this->step(ReportStep::People))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->where('immediateDanger', false));
 
         $this->assertFalse(session('report_draft.steps.description.immediate_danger'));
     }
@@ -206,7 +224,9 @@ class ReportWizardTest extends TestCase
             ->assertSessionHasNoErrors()
             ->assertRedirect($this->step(ReportStep::Attachments));
 
-        $this->get($this->step(ReportStep::Attachments))->assertOk()->assertSee('Étape 5 sur 6');
+        $this->get($this->step(ReportStep::Attachments))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->where('step', 'pieces-jointes'));
     }
 
     public function test_abandon_erases_the_draft(): void
@@ -228,7 +248,8 @@ class ReportWizardTest extends TestCase
 
         $this->get(route('report.start'))
             ->assertOk()
-            ->assertSee('Reprendre mon signalement')
-            ->assertSee($this->step(ReportStep::Description));
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('hasDraft', true)
+                ->where('resumeUrl', $this->step(ReportStep::Description)));
     }
 }

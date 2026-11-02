@@ -181,6 +181,7 @@ return [
             'reason' => 'Motif de la consultation',
             'reason_help' => 'Indiquez en une phrase pourquoi vous avez besoin de l\'identité. Ce motif est enregistré dans le journal d\'audit.',
             'confirm' => 'Afficher l\'identité',
+            'cancel' => 'Annuler',
             'revealed_help' => 'Affichée pour cette consultation uniquement ; elle sera masquée au prochain chargement. Cette consultation a été enregistrée.',
             'no_consent' => 'La personne n\'a pas consenti à l\'accès à son identité.',
             'forbidden' => 'Accès non autorisé pour votre rôle.',
@@ -250,11 +251,19 @@ return [
 
     'dashboard' => [
         'title' => 'Tableau de bord',
+        'open_list' => 'Voir les dossiers',
         'welcome' => 'Bonjour :name.',
         'mine_open' => 'Mes dossiers ouverts',
         'unassigned_open' => 'Dossiers ouverts non affectés',
         'visible_total' => 'Dossiers visibles au total',
         'no_case_access' => 'Votre rôle ne donne pas accès aux dossiers.',
+    ],
+
+    'pagination' => [
+        'label' => 'Pagination',
+        'summary' => ':from à :to sur :total',
+        'previous' => 'Précédent',
+        'next' => 'Suivant',
     ],
 
 ];

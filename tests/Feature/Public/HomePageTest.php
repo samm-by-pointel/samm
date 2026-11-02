@@ -4,6 +4,7 @@ namespace Tests\Feature\Public;
 
 use App\Modules\Organizations\Models\Organization;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class HomePageTest extends TestCase
@@ -30,11 +31,14 @@ class HomePageTest extends TestCase
 
         $response->assertOk()
             ->assertSee('<html lang="fr">', false)
-            ->assertSee('Quitter rapidement')
-            ->assertSee('Sàmm')
-            ->assertSee('Faire un signalement')
-            ->assertSee('data-quick-exit-url="https://exit.example"', false)
-            ->assertSee('<title>Sàmm</title>', false);
+            ->assertSee('<title>Sàmm</title>', false)
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('public/Home')
+                ->where('locale', 'fr')
+                ->where('site.name', 'Sàmm')
+                ->where('site.quickExitUrl', 'https://exit.example')
+                ->where('translations.public.quick_exit.label', 'Quitter rapidement')
+                ->where('translations.public.home.report_cta', 'Faire un signalement'));
     }
 
     public function test_home_page_loads_no_third_party_resource(): void
@@ -66,10 +70,11 @@ class HomePageTest extends TestCase
 
         $this->get(route('public.home'))
             ->assertOk()
-            ->assertSee('Cellule d&#039;écoute', false)
             ->assertSee('<title>Espace information</title>', false)
-            ->assertSee('data-quick-exit-url="https://exit.organisation.example"', false)
-            ->assertDontSee('data-quick-exit-url="https://exit.example"', false);
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('site.name', "Cellule d'écoute")
+                ->where('site.neutralTitle', 'Espace information')
+                ->where('site.quickExitUrl', 'https://exit.organisation.example'));
     }
 
     public function test_organization_colors_are_injected_as_css_variables(): void

@@ -11,6 +11,7 @@ use App\Modules\Reporting\Models\ReportCategory;
 use App\Modules\Users\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class ReportCategoriesAdminTest extends TestCase
@@ -43,7 +44,10 @@ class ReportCategoriesAdminTest extends TestCase
         $this->assertSame('Par messages ou réseaux sociaux', $category->translate('description', 'fr'));
 
         auth()->logout();
-        $this->get(route('report.step.show', ReportStep::Situation))->assertSeeInOrder(['Cyberharcèlement', 'Autre situation']);
+        $this->get(route('report.step.show', ReportStep::Situation))
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('categories.0.label', 'Cyberharcèlement')
+                ->where('categories.1.label', 'Autre situation'));
 
         $this->actingAs($this->admin)->put(route('manage.organization.categories.update', $category), ['name' => ['fr' => 'Harcèlement en ligne'], 'position' => 5])->assertRedirect();
         $category->refresh();
@@ -51,7 +55,9 @@ class ReportCategoriesAdminTest extends TestCase
         $this->assertFalse($category->is_active);
 
         auth()->logout();
-        $this->get(route('report.step.show', ReportStep::Situation))->assertSee('Autre situation')->assertDontSee('Harcèlement en ligne');
+        $response = $this->get(route('report.step.show', ReportStep::Situation))
+            ->assertInertia(fn (Assert $page) => $page->has('categories', 1)->where('categories.0.label', 'Autre situation'));
+        $this->assertPageMissing($response, 'Harcèlement en ligne');
 
         $operations = AuditLog::query()->where('action', AuditAction::CategoryChanged->value)->pluck('context')->map(fn (array $context): string => $context['operation'])->all();
         $this->assertSame(['created', 'created', 'updated'], $operations);
@@ -66,7 +72,9 @@ class ReportCategoriesAdminTest extends TestCase
 
         $this->actingAs($this->admin)->put(route('manage.organization.categories.update', $category), ['name' => ['fr' => 'Ancienne catégorie'], 'position' => 1])->assertRedirect();
 
-        $this->actingAs($supervisor)->get(route('manage.cases.show', $case))->assertOk()->assertSee('Ancienne catégorie');
+        $this->actingAs($supervisor)->get(route('manage.cases.show', $case))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->where('case.category', 'Ancienne catégorie'));
     }
 
     public function test_name_is_required_in_at_least_one_language_and_permission_is_required(): void

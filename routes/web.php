@@ -7,6 +7,7 @@ use App\Modules\Cases\Http\Controllers\CasePriorityController;
 use App\Modules\Cases\Http\Controllers\CaseStatusController;
 use App\Modules\Cases\Http\Controllers\DashboardController;
 use App\Modules\Cases\Http\Controllers\InternalNoteController;
+use App\Modules\Core\Http\Controllers\HomeController;
 use App\Modules\Core\Http\Controllers\LocaleController;
 use App\Modules\IdentityVault\Http\Controllers\IdentityRevealController;
 use App\Modules\Messaging\Http\Controllers\PublicMessageController;
@@ -20,7 +21,7 @@ use App\Modules\Tracking\Http\Controllers\TrackingController;
 use App\Modules\Tracking\Http\Middleware\EnsureTrackingSession;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'public.home')->name('public.home');
+Route::get('/', HomeController::class)->name('public.home');
 
 Route::post('/langue', [LocaleController::class, 'update'])->name('locale.update');
 Route::get('/logo', [OrganizationLogoController::class, 'show'])->name('organization.logo');

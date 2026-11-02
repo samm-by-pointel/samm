@@ -4,20 +4,20 @@ namespace App\Modules\IdentityVault\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Cases\Models\CaseFile;
-use App\Modules\Cases\Services\CasePageData;
 use App\Modules\IdentityVault\Events\IdentityRevealed;
-use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 /**
  * Explicit, justified and audited access to the identity of the reporting
- * person (charter §12.10). The identity is rendered in this single response
- * and never kept in session: reloading the page masks it again.
+ * person (charter §12.10). The identity is sent in this single JSON response
+ * and only kept in the page's memory: it is never stored in the session nor in
+ * the browser history, and reloading the page masks it again.
  */
 class IdentityRevealController extends Controller
 {
-    public function store(Request $request, CaseFile $case, CasePageData $pageData): View
+    public function store(Request $request, CaseFile $case): JsonResponse
     {
         Gate::authorize('viewIdentity', $case);
 
@@ -29,6 +29,12 @@ class IdentityRevealController extends Controller
 
         IdentityRevealed::dispatch($case, $request->user(), $validated['reason']);
 
-        return view('manage.cases.show', $pageData->for($case, $request->user(), $identity));
+        return response()->json([
+            'identity' => [
+                'fullName' => $identity->full_name,
+                'email' => $identity->email,
+                'phone' => $identity->phone,
+            ],
+        ])->header('Cache-Control', 'no-store');
     }
 }

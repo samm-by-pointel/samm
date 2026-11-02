@@ -4,6 +4,7 @@ namespace Tests\Feature\Users;
 
 use App\Modules\Users\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Laravel\Fortify\RecoveryCode;
 use Tests\TestCase;
 
@@ -43,8 +44,9 @@ class TwoFactorChallengeTest extends TestCase
 
         $this->get(route('two-factor.login'))
             ->assertOk()
-            ->assertSee('Vérification en deux étapes')
-            ->assertSee('Code de récupération');
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('auth/TwoFactorChallenge')
+                ->where('action', route('two-factor.login')));
     }
 
     public function test_valid_recovery_code_signs_in_and_is_consumed(): void

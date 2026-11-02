@@ -16,10 +16,10 @@ class BrandingCssTest extends TestCase
 
         $this->assertStringContainsString('--samm: #0e5a55;', $css);
         $this->assertStringContainsString('--samm-rgb: 14, 90, 85;', $css);
-        $this->assertStringContainsString('--samm-soft: #dee4df;', $css);
+        $this->assertStringContainsString('--samm-soft: #e2ebeb;', $css);
         $this->assertStringContainsString('--terre: #a84b14;', $css);
         $this->assertStringContainsString('--terre-rgb: 168, 75, 20;', $css);
-        $this->assertStringContainsString('[data-bs-theme="dark"]', $css);
+        $this->assertStringContainsString('[data-theme="dark"]', $css);
 
         foreach (['--urgent', '--attente', '--info', '--succes', '--ink', '--focus-ring'] as $lockedToken) {
             $this->assertStringNotContainsString($lockedToken, $css, "Le jeton {$lockedToken} est verrouillé.");
@@ -49,7 +49,7 @@ class BrandingCssTest extends TestCase
 
     public function test_soft_tint_is_a_twelve_percent_blend_over_the_light_surface(): void
     {
-        $this->assertSame('#dee4df', (new BrandingCss)->blend('#0e5a55', '#FAF7F2', 0.12));
+        $this->assertSame('#e2ebeb', (new BrandingCss)->blend('#0e5a55', '#FFFFFF', 0.12));
         $this->assertSame('#ffffff', (new BrandingCss)->blend('#000000', '#ffffff', 0));
         $this->assertSame('#000000', (new BrandingCss)->blend('#000000', '#ffffff', 1));
     }

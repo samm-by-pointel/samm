@@ -8,6 +8,7 @@ use App\Modules\Cases\Models\CaseFile;
 use App\Modules\Users\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class CaseAssignmentTest extends TestCase
@@ -87,7 +88,10 @@ class CaseAssignmentTest extends TestCase
 
         $this->actingAs($this->supervisor)->post(route('manage.cases.assignment.store', $case), ['assignee' => $third->uuid])->assertRedirect();
 
-        $this->actingAs($third)->get(route('manage.cases.show', $case))->assertOk()->assertDontSee('Affecter à');
-        $this->actingAs($this->supervisor)->get(route('manage.cases.show', $case))->assertSee($third->name);
+        $this->actingAs($third)->get(route('manage.cases.show', $case))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->where('can.assign', false)->where('assignableUsers', []));
+        $this->actingAs($this->supervisor)->get(route('manage.cases.show', $case))
+            ->assertInertia(fn (Assert $page) => $page->where('case.assignee', $third->name));
     }
 }

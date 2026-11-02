@@ -3,6 +3,7 @@
 namespace Tests\Feature\Core;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class LocaleSwitchTest extends TestCase
@@ -28,17 +29,19 @@ class LocaleSwitchTest extends TestCase
         $this->get(route('public.home'))
             ->assertOk()
             ->assertSee('<html lang="en">', false)
-            ->assertSee('Leave quickly');
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('locale', 'en')
+                ->where('translations.public.quick_exit.label', 'Leave quickly'));
     }
 
-    public function test_switcher_shows_a_flag_next_to_each_label(): void
+    public function test_switcher_offers_each_language_with_its_flag(): void
     {
-        $html = $this->get(route('public.home'))->assertOk()->getContent();
-
-        $this->assertSame(2, substr_count($html, 'class="samm-locale-flag"'), 'Un drapeau par langue.');
-        $this->assertStringContainsString('<span>Français</span>', $html);
-        $this->assertStringContainsString('<span>English</span>', $html);
-        $this->assertMatchesRegularExpression('/<svg class="samm-locale-flag"[^>]*aria-hidden="true"/', $html);
+        $this->get(route('public.home'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->has('locales', 2)
+                ->where('locales.0', ['code' => 'fr', 'name' => 'Français', 'flag' => 'fr'])
+                ->where('locales.1', ['code' => 'en', 'name' => 'English', 'flag' => 'gb']));
     }
 
     public function test_unknown_language_is_rejected(): void

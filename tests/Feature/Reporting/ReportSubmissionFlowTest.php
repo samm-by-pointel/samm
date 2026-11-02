@@ -8,6 +8,7 @@ use App\Modules\Reporting\Models\Report;
 use App\Modules\Reporting\Models\ReportCategory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class ReportSubmissionFlowTest extends TestCase
@@ -44,8 +45,7 @@ class ReportSubmissionFlowTest extends TestCase
 
         $this->get(route('report.step.show', ReportStep::Attachments))
             ->assertOk()
-            ->assertSee('Poursuivre sans pièce jointe')
-            ->assertSee('Étape 5 sur 6');
+            ->assertInertia(fn (Assert $page) => $page->component('report/Step')->where('step', 'pieces-jointes'));
 
         $this->assertTrue(session('report_draft.steps.pieces-jointes.skipped'));
     }
@@ -54,15 +54,16 @@ class ReportSubmissionFlowTest extends TestCase
     {
         $this->reachConsentStep();
 
-        $this->get(route('report.step.show', ReportStep::Consent))
+        $response = $this->get(route('report.step.show', ReportStep::Consent))
             ->assertOk()
-            ->assertSee('Récapitulatif de vos choix')
-            ->assertSee('Discrimination')
-            ->assertSee('Anonyme')
-            ->assertSee('Transmettre le signalement')
-            ->assertSee(route('report.submit'))
-            ->assertDontSee('Récit fictif')
-            ->assertDontSee('consent_identity_disclosure');
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('step', 'consentement')
+                ->where('summary.category', 'Discrimination')
+                ->where('summary.level', 'Anonyme')
+                ->where('isConfidential', false)
+                ->where('action', route('report.submit')));
+
+        $this->assertPageMissing($response, 'Récit fictif', 'Le récapitulatif ne reprend jamais le récit.');
     }
 
     public function test_processing_consent_is_required_to_submit(): void
@@ -81,7 +82,8 @@ class ReportSubmissionFlowTest extends TestCase
     {
         $this->reachConsentStep(['confidentiality_level' => 'confidential', 'identity_full_name' => 'Nom Fictif']);
 
-        $this->get(route('report.step.show', ReportStep::Consent))->assertSee('consent_identity_disclosure');
+        $this->get(route('report.step.show', ReportStep::Consent))
+            ->assertInertia(fn (Assert $page) => $page->where('isConfidential', true));
 
         $this->post(route('report.submit'), ['consent_processing' => '1'])
             ->assertSessionHasErrors('consent_identity_disclosure');
@@ -97,23 +99,28 @@ class ReportSubmissionFlowTest extends TestCase
     {
         $this->reachConsentStep();
 
-        $response = $this->post(route('report.submit'), ['consent_processing' => '1', 'consent_contact' => '1'])
+        $this->post(route('report.submit'), ['consent_processing' => '1', 'consent_contact' => '1'])
             ->assertRedirect(route('report.confirmation'));
 
         $this->assertFalse(session()->has('report_draft'));
 
         $report = Report::query()->sole();
-        $page = $this->get(route('report.confirmation'))
+        $secret = null;
+        $this->get(route('report.confirmation'))
             ->assertOk()
-            ->assertSee('Votre signalement a bien été déposé')
-            ->assertSee($report->reference)
-            ->assertSee('Secret de récupération')
-            ->assertSee('Copier les codes')
-            ->assertSee('download="samm-codes.txt"', false);
+            ->assertInertia(function (Assert $page) use ($report, &$secret) {
+                $page->component('report/Confirmation')
+                    ->where('reference', $report->reference)
+                    ->where('downloadText', fn (string $text) => str_contains($text, $report->reference))
+                    ->where('secret', function (string $value) use (&$secret) {
+                        $secret = $value;
 
-        preg_match('/id="samm-secret">([A-Z2-9-]+)</', $page->getContent(), $matches);
-        $this->assertNotEmpty($matches[1] ?? null, 'Le secret doit être affiché.');
-        $this->assertTrue($report->trackingCredential->verify($matches[1]));
+                        return preg_match('/^[A-Z2-9-]+$/', $value) === 1;
+                    });
+            });
+
+        $this->assertNotEmpty($secret, 'Le secret doit être affiché.');
+        $this->assertTrue($report->trackingCredential->verify($secret));
 
         $this->get(route('report.confirmation'))->assertRedirect(route('public.home'));
         $this->assertTrue($report->immediate_danger);
@@ -139,8 +146,11 @@ class ReportSubmissionFlowTest extends TestCase
 
         $this->post(route('report.submit'), ['consent_processing' => '1'])
             ->assertStatus(429)
-            ->assertSee('Trop de tentatives')
-            ->assertSee('Quitter rapidement');
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Error')
+                ->where('status', 429)
+                ->where('translations.public.errors.429.title', 'Trop de tentatives')
+                ->where('site.quickExitUrl', config('samm.quick_exit_url')));
 
         $this->assertDatabaseCount('reports', 0);
     }

@@ -12,6 +12,7 @@ use App\Modules\Workflow\Enums\CaseStatus;
 use Database\Factories\TrackingCredentialFactory;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class CaseStatusChangeTest extends TestCase
@@ -81,13 +82,19 @@ class CaseStatusChangeTest extends TestCase
         $this->assertSame(CaseStatus::Closed, $this->case->fresh()->status);
         $this->assertSame('Motif de clôture fictif', $this->case->fresh()->closure_reason);
 
-        $this->actingAs($this->manager)->get(route('manage.cases.show', $this->case))->assertSee('Clôturé')->assertSee('Motif de clôture fictif');
+        $this->actingAs($this->manager)->get(route('manage.cases.show', $this->case))
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('case.status.label', 'Clôturé')
+                ->where('histories', fn ($histories) => collect($histories)->contains('comment', 'Motif de clôture fictif')));
 
         $this->actingAs($this->manager)->post(route('manage.cases.status.store', $this->case), ['status' => 'in_progress'])->assertRedirect();
         $this->assertTrue($this->case->fresh()->status->isOpen());
 
         auth()->logout();
         $this->post(route('tracking.authenticate'), ['reference' => 'SMM-7K4Q-92XD', 'secret' => TrackingCredentialFactory::SECRET]);
-        $this->get(route('tracking.show'))->assertOk()->assertSee('En cours de traitement')->assertDontSee('Motif de clôture fictif');
+        $response = $this->get(route('tracking.show'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->where('report.status.label', 'En cours de traitement'));
+        $this->assertPageMissing($response, 'Motif de clôture fictif');
     }
 }

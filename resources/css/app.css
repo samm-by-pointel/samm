@@ -1,15 +1,159 @@
-/* Polices embarquées (charte §4, §11.2) : aucune requête vers un service tiers */
-@import '@fontsource-variable/fraunces/opsz.css';
-@import '@fontsource/atkinson-hyperlegible/400.css';
-@import '@fontsource/atkinson-hyperlegible/400-italic.css';
-@import '@fontsource/atkinson-hyperlegible/700.css';
-@import '@fontsource/jetbrains-mono/500.css';
+/*
+ * Sàmm - thème Tailwind.
+ * Polices embarquées (charte §4, §11.2) : aucune requête vers un service tiers.
+ * Atkinson Hyperlegible a été dessinée pour les personnes malvoyantes ; sa version
+ * Mono distingue sans ambiguïté 0/O et 1/l, ce que les codes de suivi exigent.
+ */
+@import '@fontsource-variable/atkinson-hyperlegible-next/wght.css';
+@import '@fontsource-variable/atkinson-hyperlegible-next/wght-italic.css';
+@import '@fontsource-variable/atkinson-hyperlegible-mono/wght.css';
+@import 'tailwindcss';
 
-/* Bootstrap 5.3 et Bootstrap Icons */
-@import 'bootstrap/dist/css/bootstrap.min.css';
-@import 'bootstrap-icons/font/bootstrap-icons.min.css';
+@source '../js';
 
-/* Sàmm : jetons, branchement Bootstrap, composants */
-@import './tokens.css';
-@import './bootstrap-bridge.css';
-@import './components.css';
+/*
+ * Jetons. --samm et --terre (et leurs -soft) sont surchargés par les couleurs
+ * de l'organisation (BrandingCss) : tout ce qui porte la marque passe par eux.
+ * Statuts, alertes, sortie rapide et focus restent fixes (charte §3).
+ */
+:root {
+  --surface: #FFFFFF;
+  --surface-alt: #F6F5FA;
+  --surface-sunken: #EDEBF5;
+  --line: #E1DEEC;
+  --line-strong: #8C88A3;
+  --ink: #1C1A33;
+  --ink-muted: #5A5772;
+  --on-ink: #FFFFFF;
+  --samm: #4636A8;
+  --samm-soft: #EEEBFA;
+  --on-samm: #FFFFFF;
+  --terre: #B5531D;
+  --terre-soft: #FCEBDF;
+  --urgent: #B42318;
+  --urgent-soft: #FDE7E4;
+  --attente: #8A5A00;
+  --attente-soft: #FBEFCB;
+  --info: #2F5B8A;
+  --info-soft: #E4ECF6;
+  --succes: #2E6B4F;
+  --succes-soft: #E1F1E8;
+  --focus: #4636A8;
+}
+
+[data-bs-theme="dark"] {
+  --surface: #16142A;
+  --surface-alt: #1D1B34;
+  --surface-sunken: #110F21;
+  --line: #2F2C4A;
+  --line-strong: #6F6B8C;
+  --ink: #EEEDF6;
+  --ink-muted: #ABA8C3;
+  --on-ink: #16142A;
+  --samm: #A99EF2;
+  --samm-soft: #2A2550;
+  --on-samm: #16142A;
+  --terre: #F2A877;
+  --terre-soft: #3A2618;
+  --urgent: #FF8B7B;
+  --urgent-soft: #3D1714;
+  --attente: #F0C24E;
+  --attente-soft: #33280C;
+  --info: #94B6DC;
+  --info-soft: #18263A;
+  --succes: #86CFA6;
+  --succes-soft: #16301F;
+  --focus: #A99EF2;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-bs-theme="light"]) {
+    --surface: #16142A;
+    --surface-alt: #1D1B34;
+    --surface-sunken: #110F21;
+    --line: #2F2C4A;
+    --line-strong: #6F6B8C;
+    --ink: #EEEDF6;
+    --ink-muted: #ABA8C3;
+    --on-ink: #16142A;
+    --samm: #A99EF2;
+    --samm-soft: #2A2550;
+    --on-samm: #16142A;
+    --terre: #F2A877;
+    --terre-soft: #3A2618;
+    --urgent: #FF8B7B;
+    --urgent-soft: #3D1714;
+    --attente: #F0C24E;
+    --attente-soft: #33280C;
+    --info: #94B6DC;
+    --info-soft: #18263A;
+    --succes: #86CFA6;
+    --succes-soft: #16301F;
+    --focus: #A99EF2;
+  }
+}
+
+@theme inline {
+  --font-sans: 'Atkinson Hyperlegible Next Variable', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'Atkinson Hyperlegible Mono Variable', ui-monospace, Menlo, Consolas, monospace;
+
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-sunken: var(--surface-sunken);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-muted: var(--ink-muted);
+  --color-on-ink: var(--on-ink);
+  --color-brand: var(--samm);
+  --color-brand-soft: var(--samm-soft);
+  --color-on-brand: var(--on-samm);
+  --color-accent: var(--terre);
+  --color-accent-soft: var(--terre-soft);
+  --color-urgent: var(--urgent);
+  --color-urgent-soft: var(--urgent-soft);
+  --color-attente: var(--attente);
+  --color-attente-soft: var(--attente-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-succes: var(--succes);
+  --color-succes-soft: var(--succes-soft);
+}
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    @apply bg-surface text-ink font-sans antialiased;
+    font-size: 17px;
+    line-height: 1.55;
+  }
+  h1, h2, h3 { text-wrap: balance; }
+  p { text-wrap: pretty; }
+  ::selection { background: var(--samm-soft); }
+
+  /* Focus clavier - charte §11.6 : toujours visible, jamais supprimé */
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  /* Mouvement réduit - charte §10 */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: .01ms !important;
+      transition-duration: .01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Champs - charte §11.2 : jamais moins de 16px, cible ≥ 44px */
+  .field-control {
+    @apply block w-full rounded-xl border border-line-strong bg-surface px-4 text-ink placeholder:text-muted;
+    min-height: 48px;
+    font-size: 17px;
+  }
+  textarea.field-control { @apply py-3; }
+  .field-control:focus-visible { @apply border-brand; outline-offset: 0; }
+  .field-control[aria-invalid="true"] { @apply border-urgent; }
+}

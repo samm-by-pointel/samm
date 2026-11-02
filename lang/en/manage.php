@@ -181,6 +181,7 @@ return [
             'reason' => 'Reason for viewing',
             'reason_help' => 'State in one sentence why you need the identity. This reason is recorded in the audit log.',
             'confirm' => 'Show the identity',
+            'cancel' => 'Cancel',
             'revealed_help' => 'Shown for this view only; it will be masked on the next load. This access has been recorded.',
             'no_consent' => 'The person did not agree to access to their identity.',
             'forbidden' => 'Access not allowed for your role.',
@@ -250,11 +251,19 @@ return [
 
     'dashboard' => [
         'title' => 'Dashboard',
+        'open_list' => 'View cases',
         'welcome' => 'Hello :name.',
         'mine_open' => 'My open cases',
         'unassigned_open' => 'Open unassigned cases',
         'visible_total' => 'Visible cases in total',
         'no_case_access' => 'Your role does not give access to cases.',
+    ],
+
+    'pagination' => [
+        'label' => 'Pagination',
+        'summary' => ':from to :to of :total',
+        'previous' => 'Previous',
+        'next' => 'Next',
     ],
 
 ];

@@ -9,27 +9,30 @@ use App\Modules\Reporting\Enums\ReportStep;
 use App\Modules\Reporting\Models\ReportCategory;
 use App\Modules\Reporting\Services\ReportDraft;
 use App\Modules\Tracking\Services\TrackingCodeGenerator;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 /**
- * Public reporting form, one classic request per step: usable without JavaScript.
+ * Public reporting form, one request per step: the draft lives in the session,
+ * never in the browser.
  */
 class ReportWizardController extends Controller
 {
     public function __construct(private readonly ReportDraft $draft) {}
 
-    public function start(): View
+    public function start(): Response
     {
-        return view('public.report.start', [
-            'firstStep' => ReportStep::first(),
+        return Inertia::render('report/Start', [
             'hasDraft' => $this->draft->hasAny(),
-            'resumeStep' => $this->draft->firstIncompleteStep() ?? ReportStep::first(),
+            'beginUrl' => route('report.step.show', ReportStep::first()),
+            'resumeUrl' => route('report.step.show', $this->draft->firstIncompleteStep() ?? ReportStep::first()),
+            'abandonUrl' => route('report.abandon'),
         ]);
     }
 
-    public function show(ReportStep $step): View|RedirectResponse
+    public function show(ReportStep $step): Response|RedirectResponse
     {
         abort_unless($step->isServed(), 404);
 
@@ -37,10 +40,16 @@ class ReportWizardController extends Controller
             return $this->redirectToFirstIncompleteStep();
         }
 
-        return view($step->view(), [
-            'step' => $step,
-            'values' => $this->draft->get($step),
+        return Inertia::render('report/Step', [
+            'step' => $step->value,
+            'title' => $step->label(),
+            'steps' => collect(ReportStep::cases())->map(fn (ReportStep $item): array => ['key' => $item->value, 'label' => $item->label()]),
+            'values' => (object) $this->draft->get($step),
             'immediateDanger' => $this->draft->value('immediate_danger') === true,
+            'action' => $step === ReportStep::Consent ? route('report.submit') : route('report.step.store', $step),
+            'backUrl' => $step->previous() ? route('report.step.show', $step->previous()) : route('report.start'),
+            'abandonUrl' => route('report.abandon'),
+            'today' => now()->toDateString(),
             ...$this->stepData($step),
         ]);
     }
@@ -92,7 +101,7 @@ class ReportWizardController extends Controller
     /**
      * Shown once: the codes come from the flashed session data and are gone on reload.
      */
-    public function confirmation(TrackingCodeGenerator $codes): View|RedirectResponse
+    public function confirmation(TrackingCodeGenerator $codes): Response|RedirectResponse
     {
         $submitted = session('submitted_report');
 
@@ -100,9 +109,20 @@ class ReportWizardController extends Controller
             return redirect()->route('public.home');
         }
 
-        return view('public.report.confirmation', [
-            'reference' => $codes->format($submitted['reference']),
-            'secret' => $codes->format($submitted['secret']),
+        $reference = $codes->format($submitted['reference']);
+        $secret = $codes->format($submitted['secret']);
+
+        // Shown once: the page must not survive in the browser history either.
+        Inertia::clearHistory();
+
+        return Inertia::render('report/Confirmation', [
+            'reference' => $reference,
+            'secret' => $secret,
+            'downloadText' => __('report_form.confirmation.download_content', [
+                'reference' => $reference,
+                'secret' => $secret,
+                'url' => route('tracking.login'),
+            ]),
         ]);
     }
 
@@ -126,8 +146,18 @@ class ReportWizardController extends Controller
     private function stepData(ReportStep $step): array
     {
         return match ($step) {
-            ReportStep::Situation => ['categories' => ReportCategory::query()->active()->ordered()->get()],
-            ReportStep::Confidentiality => ['levels' => ConfidentialityLevel::cases()],
+            ReportStep::Situation => ['categories' => ReportCategory::query()->active()->ordered()->get()
+                ->map(fn (ReportCategory $category): array => [
+                    'value' => $category->uuid,
+                    'label' => $category->name(),
+                    'description' => $category->description(),
+                ])],
+            ReportStep::Confidentiality => ['levels' => collect(ConfidentialityLevel::cases())
+                ->map(fn (ConfidentialityLevel $level): array => [
+                    'value' => $level->value,
+                    'label' => $level->label(),
+                    'description' => $level->description(),
+                ])],
             ReportStep::Consent => $this->summary(),
             default => [],
         };
@@ -151,12 +181,14 @@ class ReportWizardController extends Controller
         $level = $this->draft->value('confidentiality_level');
         $categoryUuid = $this->draft->value('category');
 
+        $category = $categoryUuid ? ReportCategory::query()->where('uuid', $categoryUuid)->first() : null;
+
         return [
-            'category' => $categoryUuid ? ReportCategory::query()->where('uuid', $categoryUuid)->first() : null,
-            'level' => $level ? ConfidentialityLevel::from($level) : null,
+            'summary' => [
+                'category' => $category?->name(),
+                'level' => $level ? ConfidentialityLevel::from($level)->label() : null,
+            ],
             'isConfidential' => $level === ConfidentialityLevel::Confidential->value,
-            'formAction' => route('report.submit'),
-            'submitLabel' => __('report_form.consent.submit'),
         ];
     }
 }

@@ -9,6 +9,7 @@ use App\Modules\Cases\Models\CaseFile;
 use App\Modules\Users\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class CasePriorityTest extends TestCase
@@ -38,7 +39,8 @@ class CasePriorityTest extends TestCase
         $entry = AuditLog::query()->where('action', AuditAction::CasePriorityChanged->value)->sole();
         $this->assertEquals(['from' => 'normal', 'to' => 'high'], $entry->context);
 
-        $this->actingAs($manager)->get(route('manage.cases.show', $case))->assertSee('Priorité haute');
+        $this->actingAs($manager)->get(route('manage.cases.show', $case))
+            ->assertInertia(fn (Assert $page) => $page->where('case.priority', ['value' => 'high', 'label' => 'Priorité haute', 'isHigh' => true]));
 
         $this->actingAs($manager)->post(route('manage.cases.priority.store', $case), ['priority' => 'high'])->assertRedirect();
         $this->assertSame(1, AuditLog::query()->where('action', AuditAction::CasePriorityChanged->value)->count(), 'Sans changement, pas d\'entrée.');

@@ -8,6 +8,7 @@ use App\Modules\Organizations\Models\Organization;
 use App\Modules\Users\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class OrganizationSettingsTest extends TestCase
@@ -52,7 +53,9 @@ class OrganizationSettingsTest extends TestCase
         $this->get(route('manage.organization.edit'))->assertRedirect(route('login'));
         $this->actingAs($manager)->get(route('manage.organization.edit'))->assertForbidden();
         $this->actingAs($manager)->put(route('manage.organization.update'), $this->payload())->assertForbidden();
-        $this->actingAs($this->admin)->get(route('manage.organization.edit'))->assertOk()->assertSee('Paramètres de l\'organisation');
+        $this->actingAs($this->admin)->get(route('manage.organization.edit'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->component('manage/organization/Edit'));
     }
 
     public function test_first_save_creates_the_single_row_and_the_public_space_reflects_it(): void
@@ -72,12 +75,15 @@ class OrganizationSettingsTest extends TestCase
         $this->get(route('public.home'))
             ->assertOk()
             ->assertSee('<html lang="en">', false)
-            ->assertSee('Listening unit')
             ->assertSee('<title>Espace information</title>', false)
             ->assertSee('--samm: #336699;', false)
-            ->assertSee('data-quick-exit-url="https://exit.organisation.example"', false);
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('site.name', 'Listening unit')
+                ->where('site.quickExitUrl', 'https://exit.organisation.example'));
 
-        $this->withSession(['locale' => 'fr'])->get(route('public.home'))->assertSee('<html lang="fr">', false)->assertSee('Cellule d&#039;écoute', false);
+        $this->withSession(['locale' => 'fr'])->get(route('public.home'))
+            ->assertSee('<html lang="fr">', false)
+            ->assertInertia(fn (Assert $page) => $page->where('site.name', "Cellule d'écoute"));
     }
 
     public function test_inaccessible_color_is_refused_with_a_suggestion(): void
@@ -121,10 +127,12 @@ class OrganizationSettingsTest extends TestCase
 
     public function test_navigation_link_follows_the_permission(): void
     {
-        $this->actingAs($this->admin)->get(route('manage.dashboard'))->assertSee(route('manage.organization.edit'));
+        $this->actingAs($this->admin)->get(route('manage.dashboard'))
+            ->assertInertia(fn (Assert $page) => $page->where('auth.can.manageSettings', true));
 
         $manager = User::factory()->create();
         $manager->assignRole('case_manager');
-        $this->actingAs($manager)->get(route('manage.dashboard'))->assertDontSee(route('manage.organization.edit'));
+        $this->actingAs($manager)->get(route('manage.dashboard'))
+            ->assertInertia(fn (Assert $page) => $page->where('auth.can.manageSettings', false));
     }
 }

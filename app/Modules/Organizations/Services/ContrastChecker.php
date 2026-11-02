@@ -13,7 +13,7 @@ class ContrastChecker
 
     private const WHITE = '#FFFFFF';
 
-    private const LIGHT_SURFACE = '#FAF7F2';
+    private const LIGHT_SURFACE = '#FFFFFF';
 
     public function isHexColor(?string $value): bool
     {

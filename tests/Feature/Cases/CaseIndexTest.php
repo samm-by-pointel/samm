@@ -12,6 +12,7 @@ use App\Modules\Reporting\Models\ReportCategory;
 use App\Modules\Users\Models\User;
 use App\Modules\Workflow\Enums\CaseStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class CaseIndexTest extends TestCase
@@ -71,7 +72,7 @@ class CaseIndexTest extends TestCase
         $this->actingAs($supervisor)->get(route('manage.cases.index', ['category' => $categoryA->uuid]))->assertSee('SMM-OPEN-0001')->assertDontSee('SMM-CLOS-0002');
         $this->actingAs($supervisor)->get(route('manage.cases.index', ['assignment' => 'mine']))->assertSee('SMM-OPEN-0001')->assertDontSee('SMM-CLOS-0002');
         $this->actingAs($supervisor)->get(route('manage.cases.index', ['assignment' => 'unassigned']))->assertSee('SMM-CLOS-0002')->assertDontSee('SMM-OPEN-0001');
-        $this->actingAs($supervisor)->get(route('manage.cases.index', ['priority' => 'high']))->assertSee('SMM-CLOS-0002')->assertSee('Priorité haute')->assertDontSee('SMM-OPEN-0001');
+        $this->actingAs($supervisor)->get(route('manage.cases.index', ['priority' => 'high']))->assertSee('SMM-CLOS-0002')->assertInertia(fn (Assert $page) => $page->where('cases.data.0.priority.label', 'Priorité haute'))->assertDontSee('SMM-OPEN-0001');
         $this->actingAs($supervisor)->get(route('manage.cases.index', ['from' => now()->subDay()->toDateString()]))->assertSee('SMM-CLOS-0002')->assertDontSee('SMM-OPEN-0001');
         $this->actingAs($supervisor)->get(route('manage.cases.index', ['status' => 'inconnu']))->assertSessionHasErrors('status');
     }
@@ -83,11 +84,12 @@ class CaseIndexTest extends TestCase
         $conversation = Conversation::factory()->create(['report_id' => $case->report_id]);
         Message::factory()->fromReporter()->count(2)->create(['conversation_id' => $conversation->id, 'body' => 'Message fictif']);
 
-        $this->actingAs($supervisor)->get(route('manage.cases.index'))
+        $response = $this->actingAs($supervisor)->get(route('manage.cases.index'))
             ->assertOk()
-            ->assertSee('2 messages non lus')
-            ->assertDontSee('Récit confidentiel')
-            ->assertDontSee('Message fictif');
+            ->assertInertia(fn (Assert $page) => $page->where('cases.data.0.unread', 2));
+
+        $this->assertPageMissing($response, 'Récit confidentiel');
+        $this->assertPageMissing($response, 'Message fictif');
     }
 
     public function test_dashboard_counters_and_links_follow_visibility(): void
@@ -98,13 +100,18 @@ class CaseIndexTest extends TestCase
 
         $this->actingAs($manager)->get(route('manage.dashboard'))
             ->assertOk()
-            ->assertSee(route('manage.cases.index'))
-            ->assertSee('Mes dossiers ouverts')
-            ->assertSeeInOrder(['<span class="n">2</span>', '<span class="n">0</span>', '<span class="n">2</span>'], false);
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('manage/Dashboard')
+                ->where('canViewCases', true)
+                ->where('auth.can.viewCases', true)
+                ->where('urls.all', route('manage.cases.index'))
+                ->where('counters', ['mine_open' => 2, 'unassigned_open' => 0, 'visible_total' => 2]));
 
         $this->actingAs($this->userWith(Permission::ViewAuditLog))->get(route('manage.dashboard'))
             ->assertOk()
-            ->assertSee('Votre rôle ne donne pas accès aux dossiers.')
-            ->assertDontSee(route('manage.cases.index'));
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('canViewCases', false)
+                ->where('counters', null)
+                ->where('auth.can.viewCases', false));
     }
 }

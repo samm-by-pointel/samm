@@ -4,6 +4,7 @@ namespace Tests\Feature\Users;
 
 use App\Modules\Users\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class LoginTest extends TestCase
@@ -23,10 +24,14 @@ class LoginTest extends TestCase
     {
         $this->get(route('login'))
             ->assertOk()
-            ->assertSee('Connexion à l\'espace de gestion')
-            ->assertSee('Se connecter')
-            ->assertSee('Mot de passe oublié ?')
-            ->assertDontSee('Quitter rapidement');
+            ->assertSee('<html lang="fr">', false)
+            ->assertSee('<meta name="robots" content="noindex, nofollow">', false)
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('auth/Login')
+                ->where('action', route('login'))
+                ->where('forgotUrl', route('password.request'))
+                ->where('translations.manage.auth.login.title', 'Connexion à l\'espace de gestion')
+                ->where('translations.manage.auth.login.submit', 'Se connecter'));
     }
 
     public function test_active_user_can_sign_in_and_reaches_the_management_area(): void
@@ -40,8 +45,9 @@ class LoginTest extends TestCase
 
         $this->get(route('manage.dashboard'))
             ->assertOk()
-            ->assertSee('Tableau de bord')
-            ->assertSee('Bonjour '.$user->name.'.');
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('manage/Dashboard')
+                ->where('auth.name', $user->name));
     }
 
     public function test_wrong_password_is_refused_with_a_french_message(): void

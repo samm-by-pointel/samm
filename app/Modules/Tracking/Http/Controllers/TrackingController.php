@@ -3,20 +3,24 @@
 namespace App\Modules\Tracking\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Messaging\Models\Message;
 use App\Modules\Reporting\Models\Report;
 use App\Modules\Tracking\Actions\AuthenticateTracking;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 /**
  * Public tracking space: no account, the two codes only.
  */
 class TrackingController extends Controller
 {
-    public function showLogin(): View
+    public function showLogin(): Response
     {
-        return view('public.tracking.login');
+        return Inertia::render('tracking/Login', [
+            'action' => route('tracking.authenticate'),
+        ]);
     }
 
     public function authenticate(Request $request, AuthenticateTracking $authenticate): RedirectResponse
@@ -35,7 +39,11 @@ class TrackingController extends Controller
         return redirect()->route('tracking.show');
     }
 
-    public function show(Request $request): View
+    /**
+     * The reporting person sees the state of the case and the exchanges, never
+     * internal notes nor the names of the staff (charter §12.8).
+     */
+    public function show(Request $request): Response
     {
         /** @var Report $report */
         $report = $request->attributes->get('tracked_report');
@@ -43,10 +51,23 @@ class TrackingController extends Controller
 
         $report->conversation?->markReadByReporter();
 
-        return view('public.tracking.show', [
-            'report' => $report,
-            'case' => $report->case,
-            'messages' => $report->conversation?->messages ?? collect(),
+        $status = $report->case->status->publicEquivalent();
+
+        return Inertia::render('tracking/Show', [
+            'report' => [
+                'reference' => $report->reference,
+                'category' => $report->category->name(),
+                'submittedAt' => $report->submitted_at->toIso8601String(),
+                'status' => ['value' => $status->value, 'label' => $status->label()],
+            ],
+            'messages' => ($report->conversation?->messages ?? collect())->map(fn (Message $message): array => [
+                'body' => $message->body,
+                'fromReporter' => $message->isFromReporter(),
+                'author' => $message->author_type->publicLabel(),
+                'createdAt' => $message->created_at->toIso8601String(),
+            ])->values(),
+            'messageAction' => route('tracking.messages.store'),
+            'logoutAction' => route('tracking.logout'),
         ]);
     }
 

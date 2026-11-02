@@ -14,9 +14,9 @@ use App\Modules\Organizations\Models\Organization;
  */
 class BrandingCss
 {
-    private const LIGHT_SURFACE = '#FAF7F2';
+    private const LIGHT_SURFACE = '#FFFFFF';
 
-    private const DARK_SURFACE = '#111715';
+    private const DARK_SURFACE = '#030712';
 
     private const LIGHT_SOFT_RATIO = 0.12;
 
@@ -49,8 +49,7 @@ class BrandingCss
 
         return implode("\n", [
             ':root { '.implode(' ', $light).' }',
-            '[data-bs-theme="dark"] { '.implode(' ', $dark).' }',
-            '@media (prefers-color-scheme: dark) { :root:not([data-bs-theme="light"]) { '.implode(' ', $dark).' } }',
+            '[data-theme="dark"] { '.implode(' ', $dark).' }',
         ]);
     }
 
