@@ -195,6 +195,38 @@ demander_secret_env() {
     ecrire_env "${cle}" "${reponse}"
 }
 
+# Saisie obligatoire : la question est reposée tant que la réponse est vide.
+# Un 4e argument optionnel donne un préfixe exigé (ex. "https://").
+demander_env_obligatoire() {
+    local cle="$1" libelle="$2" defaut="$3" prefixe="${4:-}" reponse=""
+    while true; do
+        read -r -p "    ${libelle}${defaut:+ [${defaut}]} : " reponse || true
+        reponse="${reponse:-${defaut}}"
+        if [ -z "${reponse}" ]; then
+            warn "Cette valeur est obligatoire."
+        elif [ -n "${prefixe}" ] && [[ "${reponse}" != ${prefixe}* ]] && [[ "${reponse}" != http://* ]]; then
+            warn "La valeur doit commencer par ${prefixe}"
+        else
+            break
+        fi
+    done
+    ecrire_env "${cle}" "${reponse}"
+}
+
+# Mot de passe de la base : Entrée = mot de passe fort généré (32 caractères
+# alphanumériques, compatibles cPanel). Il n'est ni affiché ni journalisé :
+# il ne sert qu'à l'application et vit dans le .env (droits 600).
+demander_mot_de_passe_bdd() {
+    local reponse=""
+    read -r -s -p "    Mot de passe de la base (masqué ; Entrée = générer un mot de passe fort) : " reponse || true
+    echo ""
+    if [ -z "${reponse}" ]; then
+        reponse="$("${PHP}" -r 'echo substr(str_replace(["+", "/", "="], "", base64_encode(random_bytes(48))), 0, 32);')"
+        ok "Mot de passe de la base généré et enregistré dans .env"
+    fi
+    ecrire_env DB_PASSWORD "${reponse}"
+}
+
 # ─────────────────────────────────────────────────────────────────────────────
 # BASE MYSQL - test de connexion et création via cPanel (uapi)
 # ─────────────────────────────────────────────────────────────────────────────
@@ -385,7 +417,7 @@ if [ ! -f "${ENV_FILE}" ]; then
     if [ -t 0 ]; then
         echo ""
         echo "  Répondez aux questions (Entrée = valeur entre crochets) :"
-        demander_env APP_URL "URL publique du site (https://...)" ""
+        demander_env_obligatoire APP_URL "URL publique du site (https://...)" "" "https://"
         demander_env DB_CONNECTION "Base de données (mysql, mariadb ou sqlite)" "mysql"
         if [ "$(lire_valeur_env DB_CONNECTION)" = "sqlite" ]; then
             ecrire_env DB_DATABASE "${DEPLOY_DIR}/database/database.sqlite"
@@ -401,9 +433,9 @@ if [ ! -f "${ENV_FILE}" ]; then
             fi
             demander_env DB_HOST "Hôte de la base" "localhost"
             demander_env DB_PORT "Port de la base" "3306"
-            demander_env DB_DATABASE "Nom de la base" "${DEFAUT_BDD}"
-            demander_env DB_USERNAME "Utilisateur de la base" "${DEFAUT_BDD}"
-            demander_secret_env DB_PASSWORD "Mot de passe de la base (masqué)"
+            demander_env_obligatoire DB_DATABASE "Nom de la base" "${DEFAUT_BDD}"
+            demander_env_obligatoire DB_USERNAME "Utilisateur de la base" "${DEFAUT_BDD}"
+            demander_mot_de_passe_bdd
 
             if "${PHP}" -m 2>/dev/null | grep -ix pdo_mysql >/dev/null; then
                 if tester_connexion_bdd; then
@@ -832,6 +864,7 @@ if [ "${IS_FIRST_DEPLOY}" = true ]; then
     echo -e "    - faire pointer la racine web du domaine sur ${DEPLOY_DIR}/public"
     echo -e "    - activer HTTPS sur le domaine"
     echo -e "    - sauvegarder APP_KEY (dans .env) hors du serveur"
+    echo -e "    - le mot de passe de la base est dans .env (DB_PASSWORD) : inutile de le retenir"
     echo -e "    - configurer l'envoi de mails (MAIL_*) dans .env"
     echo ""
 fi
