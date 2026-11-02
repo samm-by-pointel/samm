@@ -55,6 +55,11 @@ jobs:
           npm ci
           npm run build
 
+      - name: Assets à jour
+        run: |
+          git add --intent-to-add public/build
+          git diff --exit-code --stat -- public/build
+
       - name: Environnement
         run: |
           cp .env.example .env

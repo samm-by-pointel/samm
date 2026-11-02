@@ -1,0 +1,164 @@
+{
+  "node_modules/@fontsource-variable/fraunces/files/fraunces-latin-ext-opsz-normal.woff2": {
+    "file": "assets/fraunces-latin-ext-opsz-normal-CJcjJNj7.woff2",
+    "src": "node_modules/@fontsource-variable/fraunces/files/fraunces-latin-ext-opsz-normal.woff2"
+  },
+  "node_modules/@fontsource-variable/fraunces/files/fraunces-latin-opsz-normal.woff2": {
+    "file": "assets/fraunces-latin-opsz-normal-DihXLNYH.woff2",
+    "src": "node_modules/@fontsource-variable/fraunces/files/fraunces-latin-opsz-normal.woff2"
+  },
+  "node_modules/@fontsource-variable/fraunces/files/fraunces-vietnamese-opsz-normal.woff2": {
+    "file": "assets/fraunces-vietnamese-opsz-normal-Czevyj-6.woff2",
+    "src": "node_modules/@fontsource-variable/fraunces/files/fraunces-vietnamese-opsz-normal.woff2"
+  },
+  "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-400-italic.woff": {
+    "file": "assets/atkinson-hyperlegible-latin-400-italic-OoEIrRJc.woff",
+    "src": "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-400-italic.woff"
+  },
+  "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-400-italic.woff2": {
+    "file": "assets/atkinson-hyperlegible-latin-400-italic-D-qjh7ci.woff2",
+    "src": "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-400-italic.woff2"
+  },
+  "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-400-normal.woff": {
+    "file": "assets/atkinson-hyperlegible-latin-400-normal-BbWidj28.woff",
+    "src": "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-400-normal.woff"
+  },
+  "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-400-normal.woff2": {
+    "file": "assets/atkinson-hyperlegible-latin-400-normal-BrHNak5F.woff2",
+    "src": "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-400-normal.woff2"
+  },
+  "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-700-normal.woff": {
+    "file": "assets/atkinson-hyperlegible-latin-700-normal-BK6Glc0m.woff",
+    "src": "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-700-normal.woff"
+  },
+  "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-700-normal.woff2": {
+    "file": "assets/atkinson-hyperlegible-latin-700-normal-GZI4o3u0.woff2",
+    "src": "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-700-normal.woff2"
+  },
+  "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-ext-400-italic.woff": {
+    "file": "assets/atkinson-hyperlegible-latin-ext-400-italic-B-Yabllp.woff",
+    "src": "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-ext-400-italic.woff"
+  },
+  "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-ext-400-italic.woff2": {
+    "file": "assets/atkinson-hyperlegible-latin-ext-400-italic-3fJ3SmOv.woff2",
+    "src": "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-ext-400-italic.woff2"
+  },
+  "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-ext-400-normal.woff": {
+    "file": "assets/atkinson-hyperlegible-latin-ext-400-normal-Bbz-b3yf.woff",
+    "src": "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-ext-400-normal.woff"
+  },
+  "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-ext-400-normal.woff2": {
+    "file": "assets/atkinson-hyperlegible-latin-ext-400-normal-DRk46D-x.woff2",
+    "src": "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-ext-400-normal.woff2"
+  },
+  "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-ext-700-normal.woff": {
+    "file": "assets/atkinson-hyperlegible-latin-ext-700-normal-CKkU2Dpt.woff",
+    "src": "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-ext-700-normal.woff"
+  },
+  "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-ext-700-normal.woff2": {
+    "file": "assets/atkinson-hyperlegible-latin-ext-700-normal-BoVPHkS0.woff2",
+    "src": "node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-ext-700-normal.woff2"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-500-normal.woff": {
+    "file": "assets/jetbrains-mono-cyrillic-500-normal-DJqRU3vO.woff",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-500-normal.woff"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-500-normal.woff2": {
+    "file": "assets/jetbrains-mono-cyrillic-500-normal-DmUKJPL_.woff2",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-500-normal.woff2"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-ext-500-normal.woff": {
+    "file": "assets/jetbrains-mono-cyrillic-ext-500-normal-CEVyPk4Y.woff",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-ext-500-normal.woff"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-ext-500-normal.woff2": {
+    "file": "assets/jetbrains-mono-cyrillic-ext-500-normal-C9ShMxGR.woff2",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-ext-500-normal.woff2"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-greek-500-normal.woff": {
+    "file": "assets/jetbrains-mono-greek-500-normal-D7SFKleX.woff",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-greek-500-normal.woff"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-greek-500-normal.woff2": {
+    "file": "assets/jetbrains-mono-greek-500-normal-JpySY46c.woff2",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-greek-500-normal.woff2"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff": {
+    "file": "assets/jetbrains-mono-latin-500-normal-CJOVTJB7.woff",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff2": {
+    "file": "assets/jetbrains-mono-latin-500-normal-BWZEU5yA.woff2",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff2"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-ext-500-normal.woff": {
+    "file": "assets/jetbrains-mono-latin-ext-500-normal-ckzbgY84.woff",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-ext-500-normal.woff"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-ext-500-normal.woff2": {
+    "file": "assets/jetbrains-mono-latin-ext-500-normal-Cut-4mMH.woff2",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-ext-500-normal.woff2"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-vietnamese-500-normal.woff": {
+    "file": "assets/jetbrains-mono-vietnamese-500-normal-DNRqzVM1.woff",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-vietnamese-500-normal.woff"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-vietnamese-500-normal.woff2": {
+    "file": "assets/jetbrains-mono-vietnamese-500-normal-BvH7FW2L.woff2",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-vietnamese-500-normal.woff2"
+  },
+  "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff": {
+    "file": "assets/bootstrap-icons-BHUGvtHM.woff",
+    "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff"
+  },
+  "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2": {
+    "file": "assets/bootstrap-icons-DJdhg9lH.woff2",
+    "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-CFwW8Il1.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "resources/css/app.css",
+    "isEntry": true,
+    "assets": [
+      "assets/fraunces-vietnamese-opsz-normal-Czevyj-6.woff2",
+      "assets/fraunces-latin-ext-opsz-normal-CJcjJNj7.woff2",
+      "assets/fraunces-latin-opsz-normal-DihXLNYH.woff2",
+      "assets/atkinson-hyperlegible-latin-ext-400-normal-DRk46D-x.woff2",
+      "assets/atkinson-hyperlegible-latin-ext-400-normal-Bbz-b3yf.woff",
+      "assets/atkinson-hyperlegible-latin-400-normal-BrHNak5F.woff2",
+      "assets/atkinson-hyperlegible-latin-400-normal-BbWidj28.woff",
+      "assets/atkinson-hyperlegible-latin-ext-400-italic-3fJ3SmOv.woff2",
+      "assets/atkinson-hyperlegible-latin-ext-400-italic-B-Yabllp.woff",
+      "assets/atkinson-hyperlegible-latin-400-italic-D-qjh7ci.woff2",
+      "assets/atkinson-hyperlegible-latin-400-italic-OoEIrRJc.woff",
+      "assets/atkinson-hyperlegible-latin-ext-700-normal-BoVPHkS0.woff2",
+      "assets/atkinson-hyperlegible-latin-ext-700-normal-CKkU2Dpt.woff",
+      "assets/atkinson-hyperlegible-latin-700-normal-GZI4o3u0.woff2",
+      "assets/atkinson-hyperlegible-latin-700-normal-BK6Glc0m.woff",
+      "assets/jetbrains-mono-cyrillic-ext-500-normal-C9ShMxGR.woff2",
+      "assets/jetbrains-mono-cyrillic-ext-500-normal-CEVyPk4Y.woff",
+      "assets/jetbrains-mono-cyrillic-500-normal-DmUKJPL_.woff2",
+      "assets/jetbrains-mono-cyrillic-500-normal-DJqRU3vO.woff",
+      "assets/jetbrains-mono-greek-500-normal-JpySY46c.woff2",
+      "assets/jetbrains-mono-greek-500-normal-D7SFKleX.woff",
+      "assets/jetbrains-mono-vietnamese-500-normal-BvH7FW2L.woff2",
+      "assets/jetbrains-mono-vietnamese-500-normal-DNRqzVM1.woff",
+      "assets/jetbrains-mono-latin-ext-500-normal-Cut-4mMH.woff2",
+      "assets/jetbrains-mono-latin-ext-500-normal-ckzbgY84.woff",
+      "assets/jetbrains-mono-latin-500-normal-BWZEU5yA.woff2",
+      "assets/jetbrains-mono-latin-500-normal-CJOVTJB7.woff",
+      "assets/bootstrap-icons-DJdhg9lH.woff2",
+      "assets/bootstrap-icons-BHUGvtHM.woff"
+    ]
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-D0aaiiU6.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  }
+}

@@ -35,11 +35,12 @@ Renseignez la connexion MySQL dans `.env` (ou mettez `DB_CONNECTION=sqlite` et c
 
 ```bash
 php artisan migrate --seed
-npm install && npm run build
 php artisan serve
 ```
 
 `migrate --seed` crée les données système : rôles, catégories de signalement du cahier des charges et le numéro d'urgence « Police 17 ». L'espace public est à la racine du site, l'espace de gestion sur `/gestion`.
+
+Les assets compilés (`public/build`) sont fournis dans le dépôt : Node n'est pas nécessaire pour installer Sàmm, ce qui permet un hébergement mutualisé sans Node. Si vous modifiez du CSS ou du JavaScript, lancez `npm install && npm run build` puis committez `public/build` ; l'intégration continue vérifie que le build commité correspond au code.
 
 ### Comptes de démonstration
 
