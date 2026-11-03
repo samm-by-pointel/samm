@@ -77,8 +77,8 @@ Pour signaler une faille de sécurité, suivez la procédure décrite dans `SECU
 
 Les photos de la page d'accueil (`public/images/site/`) proviennent d'Unsplash et sont utilisées sous la [licence Unsplash](https://unsplash.com/license) :
 
-- `accueil.jpg` : [UK Black Tech](https://unsplash.com/photos/t_5XoZ3hE-E)
-- `equipe.jpg` : [WOCinTech Chat](https://unsplash.com/photos/UcZcsHSp8o4)
+- `accueil.jpg` : [Joice Kelly](https://unsplash.com/photos/woman-in-orange-sweater-and-skirt-rXrMy7mXUEs)
+- `equipe.jpg` : [Vitaly Gariev](https://unsplash.com/photos/a-woman-talks-to-a-therapist-in-an-office-K_MSe-zglGI)
 
 Une organisation peut les remplacer par ses propres photos en gardant les mêmes noms de fichiers ; sans fichier, la page s'en passe.
 

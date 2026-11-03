@@ -81,7 +81,7 @@ export default function Home({ levels, images }) {
             <section className="relative overflow-hidden bg-surface-alt">
                 {images.hero && (
                     <div className="absolute inset-y-0 right-0 hidden w-[46%] lg:block">
-                        <img src={images.hero} alt="" width="1600" height="1067" fetchPriority="high" className="h-full w-full rounded-bl-[140px] object-cover object-[50%_30%]" />
+                        <img src={images.hero} alt="" width="1600" height="1067" fetchPriority="high" className="h-full w-full rounded-bl-[140px] object-cover object-[60%_50%]" />
                     </div>
                 )}
                 <Leaves className="absolute top-16 right-4 hidden w-28 lg:block xl:right-10 xl:w-36" />
@@ -231,7 +231,7 @@ export default function Home({ levels, images }) {
 
             <section aria-labelledby="destinataires-titre">
                 <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)]">
-                    {images.team && <img src={images.team} alt="" width="1600" height="1068" loading="lazy" className="aspect-[3/2] h-full w-full object-cover lg:rounded-r-[48px]" />}
+                    {images.team && <img src={images.team} alt="" width="1600" height="900" loading="lazy" className="aspect-[3/2] h-full w-full object-cover lg:rounded-r-[48px]" />}
                     <div className={`px-5 pb-14 sm:px-8 ${images.team ? 'lg:py-14 lg:pr-16' : 'mx-auto max-w-3xl py-16'}`}>
                         <SectionTitle id="destinataires-titre">{t('public.home.who_title')}</SectionTitle>
                         <p className="mt-6 text-[18px] leading-relaxed">{t('public.home.who_text')}</p>
