@@ -17,6 +17,7 @@ return [
     'nav' => [
         'label' => 'Main navigation',
         'how' => 'How it works',
+        'recognize' => 'Recognising harassment',
         'guarantees' => 'Your guarantees',
         'faq' => 'Questions',
         'tracking' => 'Follow my case',
@@ -86,6 +87,27 @@ return [
                 'a' => 'This site does not erase your history. On a shared device, use private browsing or clear your history after your visit.',
             ],
         ],
+
+        'recognize_title' => 'Harassment is not always visible',
+        'recognize_lead' => 'It does not necessarily start with a serious act. Often it is small things, repeated, that end up weighing on you. If a situation makes you uncomfortable, it deserves to be heard.',
+        'recognize' => [
+            'remarks' => ['title' => 'Repeated remarks', 'text' => 'About your clothes, your body or your private life, presented as compliments or jokes.'],
+            'messages' => ['title' => 'Insistent messages', 'text' => 'Texts, calls or messages outside work or class that keep coming despite your silence.'],
+            'proximity' => ['title' => 'Unwanted closeness', 'text' => 'Gestures, physical contact or a physical presence you did not want.'],
+            'pressure' => ['title' => 'Pressure tied to your position', 'text' => 'A grade, an internship, an assignment or an appraisal that seem to depend on what you accept.'],
+            'exclusion' => ['title' => 'Being left out', 'text' => 'Information that no longer reaches you, meetings you are excluded from, rumours about you.'],
+            'climate' => ['title' => 'A changing atmosphere', 'text' => 'Sexist or degrading comments, images or jokes that create unease, even when they are not aimed at you directly.'],
+        ],
+        'recognize_note' => 'You do not have to be sure it is harassment to talk about it. Describing what happened is enough: the people who handle cases are there to qualify it with you.',
+
+        'why_title' => 'Why make a report',
+        'why' => [
+            'heard' => ['title' => 'To be heard', 'text' => 'A trained person reads your account and replies, without judging you and without deciding for you.'],
+            'stop' => ['title' => 'So that the situation stops', 'text' => 'Your organization can only act on what it knows. A report allows it to take action.'],
+            'trace' => ['title' => 'To keep a dated record', 'text' => 'Your case keeps what you described and when you described it. You decide what comes next, at your own pace.'],
+            'others' => ['title' => 'To protect other people', 'text' => 'A behaviour reported once is rarely isolated. Your account may count for others.'],
+        ],
+        'why_note' => 'Reporting commits you to nothing else. You can stay anonymous, and you can stop at any time.',
 
         'cta_text' => 'You can start now, and stop at any time.',
     ],

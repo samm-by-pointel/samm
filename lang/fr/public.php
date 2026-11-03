@@ -17,6 +17,7 @@ return [
     'nav' => [
         'label' => 'Navigation principale',
         'how' => 'Comment ça marche',
+        'recognize' => 'Reconnaître le harcèlement',
         'guarantees' => 'Vos garanties',
         'faq' => 'Questions fréquentes',
         'tracking' => 'Suivre mon dossier',
@@ -86,6 +87,27 @@ return [
                 'a' => 'Ce site n\'efface pas votre historique. Sur un appareil partagé, utilisez la navigation privée ou effacez votre historique après votre visite.',
             ],
         ],
+
+        'recognize_title' => 'Le harcèlement n\'est pas toujours visible',
+        'recognize_lead' => 'Il ne commence pas forcément par un geste grave. Souvent, ce sont des petites choses, répétées, qui finissent par peser. Si une situation vous met mal à l\'aise, elle mérite d\'être entendue.',
+        'recognize' => [
+            'remarks' => ['title' => 'Des remarques répétées', 'text' => 'Sur votre tenue, votre corps, votre vie privée, présentées comme des compliments ou des plaisanteries.'],
+            'messages' => ['title' => 'Des messages insistants', 'text' => 'Textos, appels ou messages en dehors du travail ou des cours, qui continuent malgré votre silence.'],
+            'proximity' => ['title' => 'Une proximité imposée', 'text' => 'Des gestes, des contacts ou une présence physique que vous n\'avez pas souhaités.'],
+            'pressure' => ['title' => 'Une pression liée à votre position', 'text' => 'Une note, un stage, une mission ou une évaluation qui semblent dépendre de ce que vous acceptez.'],
+            'exclusion' => ['title' => 'Une mise à l\'écart', 'text' => 'Des informations qui ne vous parviennent plus, des réunions dont vous êtes exclue, des rumeurs à votre sujet.'],
+            'climate' => ['title' => 'Un climat qui change', 'text' => 'Des propos sexistes ou dégradants, des images ou des blagues qui installent un malaise, même s\'ils ne vous visent pas directement.'],
+        ],
+        'recognize_note' => 'Vous n\'avez pas à être certaine qu\'il s\'agit de harcèlement pour en parler. Décrire ce qui s\'est passé suffit : les personnes qui traitent les dossiers sont là pour le qualifier avec vous.',
+
+        'why_title' => 'Pourquoi faire un signalement',
+        'why' => [
+            'heard' => ['title' => 'Pour être entendue', 'text' => 'Une personne formée lit votre récit et vous répond, sans vous juger et sans décider à votre place.'],
+            'stop' => ['title' => 'Pour que la situation s\'arrête', 'text' => 'Votre organisation ne peut agir que sur ce qu\'elle connaît. Un signalement lui permet de prendre des mesures.'],
+            'trace' => ['title' => 'Pour garder une trace datée', 'text' => 'Votre dossier conserve ce que vous avez décrit, quand vous l\'avez décrit. Vous décidez de la suite, à votre rythme.'],
+            'others' => ['title' => 'Pour protéger d\'autres personnes', 'text' => 'Un comportement signalé une fois est rarement isolé. Votre témoignage peut compter pour d\'autres.'],
+        ],
+        'why_note' => 'Signaler n\'engage à rien d\'autre. Vous pouvez rester anonyme, et vous pouvez vous arrêter à tout moment.',
 
         'cta_text' => 'Vous pouvez commencer maintenant, et vous arrêter à tout moment.',
     ],

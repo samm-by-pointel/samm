@@ -1,5 +1,5 @@
 import { usePage } from '@inertiajs/react';
-import { ArrowRight, Detective, FileText, LockKey, MagnifyingGlass, PencilSimple, ShieldCheck, User, UsersThree } from '../../components/icons';
+import { ArrowRight, ChatCircleDots, Check, Clock, Detective, FileText, Info, LockKey, MagnifyingGlass, PaperPlaneRight, PencilSimple, ShieldCheck, User, UsersThree } from '../../components/icons';
 import { Fragment } from 'react';
 import { IllustrationCode, IllustrationDescribe, IllustrationFollow, Leaves, Wave } from '../../components/illustrations';
 import { EmergencyContacts, PageTitle, SammSymbol } from '../../components/samm';
@@ -21,6 +21,22 @@ const PRINCIPLES = [
     { key: 'encryption', Icon: LockKey },
     { key: 'access', Icon: FileText },
     { key: 'human', Icon: UsersThree },
+];
+
+const RECOGNIZE = [
+    { key: 'remarks', Icon: ChatCircleDots },
+    { key: 'messages', Icon: PaperPlaneRight },
+    { key: 'proximity', Icon: User },
+    { key: 'pressure', Icon: FileText },
+    { key: 'exclusion', Icon: UsersThree },
+    { key: 'climate', Icon: Info },
+];
+
+const WHY = [
+    { key: 'heard', Icon: ChatCircleDots },
+    { key: 'stop', Icon: ShieldCheck },
+    { key: 'trace', Icon: Clock },
+    { key: 'others', Icon: UsersThree },
 ];
 
 const FAQ_COLUMNS = [
@@ -135,9 +151,55 @@ export default function Home({ levels, images }) {
                 </div>
             </section>
 
+            {/* Mettre des mots sur une situation, même subtile : six exemples, aucune définition fermée */}
+            <section id="reconnaitre" aria-labelledby="reconnaitre-titre" className="scroll-mt-24 bg-surface-alt">
+                <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-24">
+                    <div className="max-w-2xl">
+                        <SectionTitle id="reconnaitre-titre">{t('public.home.recognize_title')}</SectionTitle>
+                        <p className="mt-4 text-[18px] leading-relaxed">{t('public.home.recognize_lead')}</p>
+                    </div>
+                    <ul className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        {RECOGNIZE.map(({ key, Icon }) => (
+                            <li key={key} className="flex gap-4 rounded-[24px] border border-line bg-surface p-5">
+                                <span aria-hidden="true" className="grid size-11 shrink-0 place-items-center rounded-xl bg-brand-soft text-brand">
+                                    <Icon size={24} weight="fill" />
+                                </span>
+                                <div>
+                                    <h3 className="font-bold">{t(`public.home.recognize.${key}.title`)}</h3>
+                                    <p className="mt-1 text-[15px] leading-snug text-muted">{t(`public.home.recognize.${key}.text`)}</p>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                    <p className="mt-8 flex max-w-3xl gap-3 rounded-[24px] bg-brand-soft p-5 font-semibold text-brand">
+                        <Check size={24} weight="bold" className="mt-0.5 shrink-0" aria-hidden="true" />
+                        {t('public.home.recognize_note')}
+                    </p>
+                </div>
+            </section>
+
+            {/* Ce qu'un signalement apporte : quatre raisons, et le rappel qu'il n'engage à rien d'autre */}
+            <section aria-labelledby="pourquoi-titre">
+                <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-24">
+                    <SectionTitle id="pourquoi-titre" centered>
+                        {t('public.home.why_title')}
+                    </SectionTitle>
+                    <ul className="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                        {WHY.map(({ key, Icon }) => (
+                            <li key={key} className="rounded-[28px] border border-line bg-surface p-6">
+                                <Icon size={32} weight="fill" className="text-brand" aria-hidden="true" />
+                                <h3 className="mt-4 text-[19px] font-bold">{t(`public.home.why.${key}.title`)}</h3>
+                                <p className="mt-2 text-[15px] leading-snug text-muted">{t(`public.home.why.${key}.text`)}</p>
+                            </li>
+                        ))}
+                    </ul>
+                    <p className="mx-auto mt-8 max-w-2xl text-center text-[17px] font-semibold">{t('public.home.why_note')}</p>
+                </div>
+            </section>
+
             {/* Les trois niveaux, puis ce qui est garanti quel que soit le choix */}
-            <section id="garanties" aria-labelledby="garanties-titre" className="scroll-mt-24">
-                <div className="mx-auto grid max-w-7xl gap-6 px-5 pb-20 sm:px-8 lg:pb-24 xl:grid-cols-[1.55fr_1fr]">
+            <section id="garanties" aria-labelledby="garanties-titre" className="scroll-mt-24 bg-surface-alt">
+                <div className="mx-auto grid max-w-7xl gap-6 px-5 py-20 sm:px-8 lg:py-24 xl:grid-cols-[1.55fr_1fr]">
                     <div className="rounded-[28px] border border-line bg-surface-alt p-6 sm:p-8">
                         <SectionTitle id="garanties-titre">{t('public.home.guarantees_title')}</SectionTitle>
                         <p className="mt-4 font-semibold">{t('public.home.guarantees_lead')}</p>
@@ -167,7 +229,7 @@ export default function Home({ levels, images }) {
                 </div>
             </section>
 
-            <section aria-labelledby="destinataires-titre" className="bg-surface-alt">
+            <section aria-labelledby="destinataires-titre">
                 <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)]">
                     {images.team && <img src={images.team} alt="" width="1600" height="1068" loading="lazy" className="aspect-[3/2] h-full w-full object-cover lg:rounded-r-[48px]" />}
                     <div className={`px-5 pb-14 sm:px-8 ${images.team ? 'lg:py-14 lg:pr-16' : 'mx-auto max-w-3xl py-16'}`}>

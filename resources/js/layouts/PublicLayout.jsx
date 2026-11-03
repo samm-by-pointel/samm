@@ -36,6 +36,9 @@ export default function PublicLayout({ children }) {
                         <a href={`${home}#fonctionnement`} className={navLink}>
                             {t('public.nav.how')}
                         </a>
+                        <a href={`${home}#reconnaitre`} className={navLink}>
+                            {t('public.nav.recognize')}
+                        </a>
                         <a href={`${home}#garanties`} className={navLink}>
                             {t('public.nav.guarantees')}
                         </a>
