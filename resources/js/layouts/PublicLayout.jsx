@@ -165,5 +165,5 @@ export default function PublicLayout({ children }) {
 
 /* Conteneur étroit des formulaires et pages de texte */
 export function Narrow({ children, className = '' }) {
-    return <div className={`mx-auto max-w-[720px] px-5 py-10 sm:px-8 sm:py-14 ${className}`}>{children}</div>;
+    return <div className={`relative mx-auto max-w-[720px] px-5 py-10 sm:px-8 sm:py-14 ${className}`}>{children}</div>;
 }
