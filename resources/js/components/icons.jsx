@@ -45,6 +45,8 @@ import {
     UserCircleIcon as UserCircleOutline,
     UserGroupIcon as UserGroupOutline,
     XMarkIcon as XMarkOutline,
+    MoonIcon as MoonOutline,
+    SunIcon as SunOutline,
 } from '@heroicons/react/24/outline';
 import {
     ArrowDownTrayIcon as ArrowDownTraySolid,
@@ -87,6 +89,8 @@ import {
     UserCircleIcon as UserCircleSolid,
     UserGroupIcon as UserGroupSolid,
     XMarkIcon as XMarkSolid,
+    MoonIcon as MoonSolid,
+    SunIcon as SunSolid,
 } from '@heroicons/react/24/solid';
 
 function icon(Outline, Solid) {
@@ -124,6 +128,7 @@ export const Info = icon(InformationCircleOutline, InformationCircleSolid);
 export const Key = icon(KeyOutline, KeySolid);
 export const ListChecks = icon(ClipboardDocumentListOutline, ClipboardDocumentListSolid);
 export const LockKey = icon(LockClosedOutline, LockClosedSolid);
+export const Moon = icon(MoonOutline, MoonSolid);
 export const MagnifyingGlass = icon(MagnifyingGlassOutline, MagnifyingGlassSolid);
 export const NotePencil = icon(PencilSquareOutline, PencilSquareSolid);
 export const PaperPlaneRight = icon(PaperAirplaneOutline, PaperAirplaneSolid);
@@ -134,6 +139,7 @@ export const Plus = icon(PlusOutline, PlusSolid);
 export const ShieldCheck = icon(ShieldCheckOutline, ShieldCheckSolid);
 export const SignOut = icon(ArrowRightStartOnRectangleOutline, ArrowRightStartOnRectangleSolid);
 export const SquaresFour = icon(Squares2X2Outline, Squares2X2Solid);
+export const Sun = icon(SunOutline, SunSolid);
 export const Trash = icon(TrashOutline, TrashSolid);
 export const Tray = icon(InboxOutline, InboxSolid);
 export const User = icon(UserOutline, UserSolid);

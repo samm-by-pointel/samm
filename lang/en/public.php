@@ -14,6 +14,12 @@ return [
         'label' => 'Language',
     ],
 
+    'theme' => [
+        'label' => 'Display',
+        'light' => 'Light mode',
+        'dark' => 'Dark mode',
+    ],
+
     'nav' => [
         'label' => 'Main navigation',
         'how' => 'How it works',

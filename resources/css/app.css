@@ -43,7 +43,7 @@
   --logo: #0E5A55;
 }
 
-[data-bs-theme="dark"] {
+[data-theme="dark"] {
   --surface: #111715;
   --surface-alt: #19211F;
   --surface-sunken: #0C1110;
@@ -69,7 +69,7 @@
   --logo: #4FB3A9;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-bs-theme="light"]) {
+  :root:not([data-theme="light"]) {
     --surface: #111715;
     --surface-alt: #19211F;
     --surface-sunken: #0C1110;

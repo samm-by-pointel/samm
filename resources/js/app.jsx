@@ -1,17 +1,10 @@
 import { createInertiaApp } from '@inertiajs/react';
 import { createRoot } from 'react-dom/client';
 
-/**
- * Thème : les jetons suivent déjà prefers-color-scheme en CSS ; l'attribut sert
- * aux couleurs de l'organisation (BrandingCss), qui ciblent le même sélecteur.
- */
-function syncTheme(mediaQuery) {
-    document.documentElement.setAttribute('data-bs-theme', mediaQuery.matches ? 'dark' : 'light');
-}
+import { applyStoredTheme } from './lib/theme';
 
-const darkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-syncTheme(darkScheme);
-darkScheme.addEventListener('change', syncTheme);
+// Thème choisi par la personne, sinon celui du système (voir lib/theme.js).
+applyStoredTheme();
 
 const pages = import.meta.glob('./pages/**/*.jsx');
 

@@ -47,9 +47,13 @@ class BrandingCss
             return '';
         }
 
+        $darkRules = implode(' ', $dark);
+
+        // Same selectors as app.css: explicit choice first, system preference otherwise.
         return implode("\n", [
             ':root { '.implode(' ', $light).' }',
-            '[data-theme="dark"] { '.implode(' ', $dark).' }',
+            '[data-theme="dark"] { '.$darkRules.' }',
+            '@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { '.$darkRules.' } }',
         ]);
     }
 

@@ -20,6 +20,8 @@ class BrandingCssTest extends TestCase
         $this->assertStringContainsString('--terre: #a84b14;', $css);
         $this->assertStringContainsString('--terre-rgb: 168, 75, 20;', $css);
         $this->assertStringContainsString('[data-theme="dark"]', $css);
+        $this->assertStringContainsString('@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])', $css);
+        $this->assertStringNotContainsString('data-bs-theme', $css, 'Même attribut que app.css et app.jsx.');
 
         foreach (['--urgent', '--attente', '--info', '--succes', '--ink', '--focus-ring'] as $lockedToken) {
             $this->assertStringNotContainsString($lockedToken, $css, "Le jeton {$lockedToken} est verrouillé.");

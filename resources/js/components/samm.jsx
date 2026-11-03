@@ -1,9 +1,10 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { ArrowLeft, ArrowRight, Check, Globe, LockKey, Phone, SignOut } from './icons';
+import { ArrowLeft, ArrowRight, Check, LockKey, Moon, Phone, SignOut, Sun } from './icons';
 import { Wave } from './illustrations';
 import { useEffect } from 'react';
 import { leaveQuickly, listenForDoubleEscape } from '../quick-exit';
 import { useDateFormatter, useTranslator } from '../lib/i18n';
+import { useTheme } from '../lib/theme';
 import { cx } from './ui';
 
 /* Symbole Sàmm (charte §7) : il prend currentColor */
@@ -116,12 +117,11 @@ export function LocaleSwitcher({ compact = false }) {
     const t = useTranslator();
     const choose = (code) => router.post(routes.locale, { locale: code }, { preserveScroll: true });
 
-    // Version d'en-tête : globe et codes de langue ; le nom complet reste lu par les lecteurs d'écran.
+    // Version d'en-tête : un drapeau par langue (charte §6) ; le nom reste lu par les lecteurs d'écran.
     if (compact) {
         return (
-            <fieldset className="m-0 flex items-center gap-1 rounded-full border border-line py-0.5 pr-0.5 pl-2.5">
+            <fieldset className="m-0 flex items-center gap-0.5 rounded-full border border-line p-0.5">
                 <legend className="sr-only">{t('public.language.label')}</legend>
-                <Globe size={18} className="text-muted" aria-hidden="true" />
                 {locales.map((item) => {
                     const active = item.code === locale;
 
@@ -132,12 +132,9 @@ export function LocaleSwitcher({ compact = false }) {
                             lang={item.code}
                             aria-current={active ? 'true' : undefined}
                             onClick={() => choose(item.code)}
-                            className={cx(
-                                'inline-flex min-h-10 min-w-10 items-center justify-center rounded-full px-2 text-[14px] font-bold uppercase',
-                                active ? 'bg-brand-soft text-brand' : 'text-muted hover:text-ink',
-                            )}
+                            className={cx('inline-flex min-h-10 min-w-10 items-center justify-center rounded-full', active ? 'bg-brand-soft' : 'opacity-60 hover:opacity-100')}
                         >
-                            <span aria-hidden="true">{item.code}</span>
+                            {item.flag && <Flag code={item.flag} />}
                             <span className="sr-only">{item.name}</span>
                         </button>
                     );
@@ -173,6 +170,25 @@ export function LocaleSwitcher({ compact = false }) {
                 })}
             </ul>
         </fieldset>
+    );
+}
+
+/* Bascule clair / sombre : le libellé annonce le thème vers lequel on bascule */
+export function ThemeToggle() {
+    const t = useTranslator();
+    const [theme, setTheme] = useTheme();
+    const next = theme === 'dark' ? 'light' : 'dark';
+
+    return (
+        <button
+            type="button"
+            onClick={() => setTheme(next)}
+            aria-label={`${t('public.theme.label')} : ${t(`public.theme.${next}`)}`}
+            title={t(`public.theme.${next}`)}
+            className="inline-flex size-11 items-center justify-center rounded-full border border-line text-muted hover:bg-surface-alt hover:text-ink"
+        >
+            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+        </button>
     );
 }
 

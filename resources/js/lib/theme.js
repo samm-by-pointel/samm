@@ -1,11 +1,23 @@
 import { useCallback, useEffect, useState } from 'react';
 
 /**
- * Mode clair ou sombre. Le choix de la personne est mémorisé sur l'appareil ;
- * sans choix, le thème suit celui du système. Le script du gabarit racine
- * applique déjà le thème avant l'affichage, ce module ne fait que le modifier.
+ * Mode clair ou sombre. Le choix de la personne est mémorisé sur l'appareil
+ * (localStorage, rien n'est envoyé au serveur) ; sans choix, le thème suit
+ * celui du système. L'attribut data-theme est lu par app.css et par le CSS
+ * d'organisation (BrandingCss).
  */
 const STORAGE_KEY = 'theme';
+const media = () => window.matchMedia('(prefers-color-scheme: dark)');
+
+/**
+ * À appeler au démarrage : pose le thème mémorisé, sinon celui du système,
+ * et suit le système tant qu'aucun choix n'est mémorisé.
+ */
+export function applyStoredTheme() {
+    const apply = () => document.documentElement.setAttribute('data-theme', stored() ?? (media().matches ? 'dark' : 'light'));
+    apply();
+    media().addEventListener('change', apply);
+}
 
 function current() {
     return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
@@ -34,16 +46,11 @@ export function useTheme() {
     }, []);
 
     useEffect(() => {
-        const media = window.matchMedia('(prefers-color-scheme: dark)');
-        const follow = (event) => {
-            if (!stored()) {
-                document.documentElement.setAttribute('data-theme', event.matches ? 'dark' : 'light');
-                setThemeState(current());
-            }
-        };
-        media.addEventListener('change', follow);
+        const query = media();
+        const follow = () => setThemeState(current());
+        query.addEventListener('change', follow);
 
-        return () => media.removeEventListener('change', follow);
+        return () => query.removeEventListener('change', follow);
     }, []);
 
     return [theme, setTheme];

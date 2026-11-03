@@ -14,6 +14,12 @@ return [
         'label' => 'Langue',
     ],
 
+    'theme' => [
+        'label' => 'Affichage',
+        'light' => 'Mode clair',
+        'dark' => 'Mode sombre',
+    ],
+
     'nav' => [
         'label' => 'Navigation principale',
         'how' => 'Comment ça marche',

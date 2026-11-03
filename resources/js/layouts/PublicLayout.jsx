@@ -1,6 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
 import { CaretRight, ShieldCheck } from '../components/icons';
-import { LocaleSwitcher, QuickExit, SammSymbol } from '../components/samm';
+import { LocaleSwitcher, QuickExit, SammSymbol, ThemeToggle } from '../components/samm';
 import { useTranslator } from '../lib/i18n';
 
 /**
@@ -32,28 +32,14 @@ export default function PublicLayout({ children }) {
                         <span className="max-sm:sr-only">{site.name}</span>
                     </Link>
 
-                    <nav aria-label={t('public.nav.label')} className="hidden items-center gap-1 xl:flex">
-                        <a href={`${home}#fonctionnement`} className={navLink}>
-                            {t('public.nav.how')}
-                        </a>
-                        <a href={`${home}#reconnaitre`} className={navLink}>
-                            {t('public.nav.recognize')}
-                        </a>
-                        <a href={`${home}#garanties`} className={navLink}>
-                            {t('public.nav.guarantees')}
-                        </a>
-                        <a href={`${home}#questions`} className={navLink}>
-                            {t('public.nav.faq')}
-                        </a>
-                        <Link href={routes.trackingLogin} className={navLink}>
-                            {t('public.nav.tracking')}
-                        </Link>
-                    </nav>
-
-                    <div className="ml-auto flex items-center gap-3">
-                        <div className="hidden md:block">
-                            <LocaleSwitcher compact />
-                        </div>
+                    <div className="ml-auto flex items-center gap-2 sm:gap-3">
+                        <nav aria-label={t('public.nav.label')} className="hidden md:block">
+                            <Link href={routes.trackingLogin} className={navLink}>
+                                {t('public.nav.tracking')}
+                            </Link>
+                        </nav>
+                        <LocaleSwitcher compact />
+                        <ThemeToggle />
                         <QuickExit />
                     </div>
                 </div>
@@ -107,9 +93,6 @@ export default function PublicLayout({ children }) {
                     <div className="space-y-2 text-[14px] opacity-80 lg:pl-10">
                         <p>{t('public.footer.initiative')}</p>
                         <p>{t('public.footer.license')}</p>
-                        <div className="pt-4 md:hidden">
-                            <LocaleSwitcher />
-                        </div>
                     </div>
                 </div>
             </footer>
