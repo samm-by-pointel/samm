@@ -4,6 +4,16 @@ import { SammSymbol } from '../components/samm';
 import { cx } from '../components/ui';
 import { useTranslator } from '../lib/i18n';
 
+/* Initiales du compte, pour la pastille du bloc utilisateur */
+function initials(name) {
+    return (name ?? '')
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0].toUpperCase())
+        .join('');
+}
+
 /**
  * Espace de gestion : navigation latérale, plus dense et plus large que l'espace public.
  */
@@ -23,33 +33,37 @@ export default function ManageLayout({ children }) {
 
     const isActive = (item) => (item.exact ? currentPath === pathOf(item.href) : currentPath.startsWith(pathOf(item.href)));
 
+    const logout = (
+        <button
+            type="button"
+            onClick={() => router.post(routes.logout)}
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl px-3 text-[15px] font-semibold text-muted hover:bg-surface-alt hover:text-ink"
+        >
+            <SignOut size={18} aria-hidden="true" />
+            {t('manage.layout.logout')}
+        </button>
+    );
+
     return (
-        <div className="min-h-screen bg-surface-alt lg:grid lg:grid-cols-[260px_1fr]">
+        <div className="min-h-screen bg-surface-alt lg:grid lg:grid-cols-[264px_1fr]">
             <a href="#contenu" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:bg-ink focus:px-4 focus:py-3 focus:text-on-ink">
                 {t('manage.layout.skip_to_content')}
             </a>
 
             <aside className="border-b border-line bg-surface lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-r lg:border-b-0">
                 <div className="flex items-center justify-between gap-3 px-5 py-4 lg:block lg:px-6 lg:py-6">
-                    <Link href={routes.dashboard} className="flex items-center gap-2.5">
+                    <Link href={routes.dashboard} className="flex items-center gap-3">
                         {site.logoUrl ? (
-                            <img src={site.logoUrl} alt="" className="h-8 w-auto max-w-[110px] object-contain" />
+                            <img src={site.logoUrl} alt="" className="h-9 w-auto max-w-[120px] object-contain" />
                         ) : (
-                            <SammSymbol size={30} className="text-logo" />
+                            <SammSymbol size={36} className="text-logo" />
                         )}
                         <span>
-                            <span className="block text-[18px] leading-tight font-bold">{site.appName}</span>
+                            <span className="block text-[19px] leading-tight font-bold">{site.appName}</span>
                             <span className="block text-[13px] text-muted">{t('manage.layout.area')}</span>
                         </span>
                     </Link>
-                    <button
-                        type="button"
-                        onClick={() => router.post(routes.logout)}
-                        className="inline-flex min-h-11 items-center gap-2 rounded-xl px-3 text-[15px] font-semibold text-muted hover:bg-surface-alt hover:text-ink lg:hidden"
-                    >
-                        <SignOut size={18} aria-hidden="true" />
-                        {t('manage.layout.logout')}
-                    </button>
+                    <div className="lg:hidden">{logout}</div>
                 </div>
 
                 <nav aria-label={t('manage.layout.area')} className="overflow-x-auto px-3 pb-3 lg:flex-1 lg:px-4">
@@ -67,7 +81,9 @@ export default function ManageLayout({ children }) {
                                             active ? 'bg-brand-soft text-brand' : 'text-muted hover:bg-surface-alt hover:text-ink',
                                         )}
                                     >
-                                        <item.Icon size={22} weight={active ? 'fill' : 'regular'} aria-hidden="true" />
+                                        <span className={cx('grid size-8 shrink-0 place-items-center rounded-lg', active ? 'bg-surface text-brand' : 'bg-surface-alt')}>
+                                            <item.Icon size={20} weight={active ? 'fill' : 'regular'} aria-hidden="true" />
+                                        </span>
                                         {item.label}
                                     </Link>
                                 </li>
@@ -77,15 +93,13 @@ export default function ManageLayout({ children }) {
                 </nav>
 
                 <div className="hidden border-t border-line p-4 lg:block">
-                    <p className="truncate px-2 font-semibold">{auth?.name}</p>
-                    <button
-                        type="button"
-                        onClick={() => router.post(routes.logout)}
-                        className="mt-1 inline-flex min-h-11 w-full items-center gap-2 rounded-xl px-2 text-[15px] font-semibold text-muted hover:bg-surface-alt hover:text-ink"
-                    >
-                        <SignOut size={18} aria-hidden="true" />
-                        {t('manage.layout.logout')}
-                    </button>
+                    <div className="flex items-center gap-3 px-2">
+                        <span aria-hidden="true" className="grid size-10 shrink-0 place-items-center rounded-full bg-brand-soft text-[14px] font-bold text-brand">
+                            {initials(auth?.name)}
+                        </span>
+                        <p className="truncate font-semibold">{auth?.name}</p>
+                    </div>
+                    <div className="mt-2">{logout}</div>
                 </div>
             </aside>
 
@@ -102,7 +116,8 @@ export function PageHeader({ title, lead, actions, children }) {
             <div className="min-w-0">
                 {children}
                 <h1 className="text-[30px] leading-tight font-bold sm:text-[34px]">{title}</h1>
-                {lead && <p className="mt-2 max-w-2xl text-muted">{lead}</p>}
+                <span aria-hidden="true" className="mt-3 block h-1 w-12 rounded-full bg-brand" />
+                {lead && <p className="mt-3 max-w-2xl text-muted">{lead}</p>}
             </div>
             {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
         </header>

@@ -1,4 +1,5 @@
 import { useForm } from '@inertiajs/react';
+import { ArrowRight } from '../../components/icons';
 import { PageTitle } from '../../components/samm';
 import { Button, Field, Input } from '../../components/ui';
 import AuthLayout from '../../layouts/AuthLayout';
@@ -35,6 +36,7 @@ export default function ResetPassword({ action, token, email }) {
                 </Field>
                 <Button type="submit" size="lg" className="w-full" disabled={form.processing}>
                     {t('manage.auth.reset.submit')}
+                    <ArrowRight size={18} weight="bold" aria-hidden="true" />
                 </Button>
             </form>
         </>

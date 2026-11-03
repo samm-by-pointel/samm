@@ -1,3 +1,4 @@
+import { ArrowRight } from '../../components/icons';
 import { useForm, usePage } from '@inertiajs/react';
 import { PageTitle } from '../../components/samm';
 import { Alert, Button, Field, Input } from '../../components/ui';
@@ -35,6 +36,7 @@ export default function ForgotPassword({ action, loginUrl }) {
                 <div className="flex flex-wrap items-center gap-3">
                     <Button type="submit" disabled={form.processing}>
                         {t('manage.auth.forgot.submit')}
+                        <ArrowRight size={18} weight="bold" aria-hidden="true" />
                     </Button>
                     <Button href={loginUrl} variant="quiet">
                         {t('manage.auth.forgot.back')}

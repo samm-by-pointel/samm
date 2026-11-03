@@ -1,3 +1,4 @@
+import { ArrowRight } from '../../components/icons';
 import { useForm } from '@inertiajs/react';
 import { PageTitle } from '../../components/samm';
 import { Button, Field, Input } from '../../components/ui';
@@ -51,6 +52,7 @@ export default function TwoFactorChallenge({ action }) {
 
                 <Button type="submit" size="lg" className="w-full" disabled={form.processing}>
                     {t('manage.two_factor.submit')}
+                    <ArrowRight size={18} weight="bold" aria-hidden="true" />
                 </Button>
             </form>
         </>

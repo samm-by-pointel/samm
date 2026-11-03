@@ -7,12 +7,14 @@ import { useTranslator } from '../../../lib/i18n';
 
 function Section({ id, title, help, children }) {
     return (
-        <section aria-labelledby={id} className="rounded-3xl border border-line bg-surface p-6 sm:p-8">
-            <h2 id={id} className="text-[21px] font-bold">
-                {title}
-            </h2>
-            {help && <p className="mt-1 text-[15px] text-muted">{help}</p>}
-            <div className="mt-6 space-y-6">{children}</div>
+        <section aria-labelledby={id} className="overflow-hidden rounded-[28px] border border-line bg-surface">
+            <div className="border-b border-line bg-surface-alt px-6 py-4 sm:px-8">
+                <h2 id={id} className="text-[20px] font-bold">
+                    {title}
+                </h2>
+                {help && <p className="mt-1 text-[15px] text-muted">{help}</p>}
+            </div>
+            <div className="space-y-6 p-6 sm:p-8">{children}</div>
         </section>
     );
 }
@@ -167,7 +169,7 @@ export default function Edit({ organization, contacts, categories, locales, defa
                 </Section>
 
                 <div className="sticky bottom-4 z-10 flex justify-end">
-                    <Button type="submit" size="lg" disabled={form.processing} className="shadow-[0_10px_30px_-10px_rgb(28_26_51/0.5)]">
+                    <Button type="submit" size="lg" disabled={form.processing} className="shadow-[0_10px_30px_-10px_rgb(28_36_34/0.5)]">
                         {t('manage.organization.save')}
                     </Button>
                 </div>

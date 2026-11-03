@@ -14,18 +14,19 @@
  * Jetons. --samm et --terre (et leurs -soft) sont surchargés par les couleurs
  * de l'organisation (BrandingCss) : tout ce qui porte la marque passe par eux.
  * Statuts, alertes, sortie rapide et focus restent fixes (charte §3).
+ * Palette : vert profond « gardien », fonds vert pâle et sable (charte §11.1).
  */
 :root {
   --surface: #FFFFFF;
-  --surface-alt: #F6F5FA;
-  --surface-sunken: #EDEBF5;
-  --line: #E1DEEC;
-  --line-strong: #8C88A3;
-  --ink: #1C1A33;
-  --ink-muted: #5A5772;
+  --surface-alt: #F2F7F5;
+  --surface-sunken: #E6EFEB;
+  --line: #DCE5E0;
+  --line-strong: #7E918A;
+  --ink: #1C2422;
+  --ink-muted: #58615E;
   --on-ink: #FFFFFF;
-  --samm: #4636A8;
-  --samm-soft: #EEEBFA;
+  --samm: #0E5A55;
+  --samm-soft: #DFEEEB;
   --on-samm: #FFFFFF;
   --terre: #B5531D;
   --terre-soft: #FCEBDF;
@@ -37,23 +38,23 @@
   --info-soft: #E4ECF6;
   --succes: #2E6B4F;
   --succes-soft: #E1F1E8;
-  --focus: #4636A8;
+  --focus: #0E5A55;
   /* Logo Sàmm : le vert du kit officiel et du favicon, jamais redéfini par une organisation */
   --logo: #0E5A55;
 }
 
 [data-bs-theme="dark"] {
-  --surface: #16142A;
-  --surface-alt: #1D1B34;
-  --surface-sunken: #110F21;
-  --line: #2F2C4A;
-  --line-strong: #6F6B8C;
-  --ink: #EEEDF6;
-  --ink-muted: #ABA8C3;
-  --on-ink: #16142A;
-  --samm: #A99EF2;
-  --samm-soft: #2A2550;
-  --on-samm: #16142A;
+  --surface: #111715;
+  --surface-alt: #19211F;
+  --surface-sunken: #0C1110;
+  --line: #2A3431;
+  --line-strong: #6B7773;
+  --ink: #ECF1EE;
+  --ink-muted: #A4AEAA;
+  --on-ink: #111715;
+  --samm: #5FC2B6;
+  --samm-soft: #133331;
+  --on-samm: #111715;
   --terre: #F2A877;
   --terre-soft: #3A2618;
   --urgent: #FF8B7B;
@@ -64,22 +65,22 @@
   --info-soft: #18263A;
   --succes: #86CFA6;
   --succes-soft: #16301F;
-  --focus: #A99EF2;
+  --focus: #5FC2B6;
   --logo: #4FB3A9;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-bs-theme="light"]) {
-    --surface: #16142A;
-    --surface-alt: #1D1B34;
-    --surface-sunken: #110F21;
-    --line: #2F2C4A;
-    --line-strong: #6F6B8C;
-    --ink: #EEEDF6;
-    --ink-muted: #ABA8C3;
-    --on-ink: #16142A;
-    --samm: #A99EF2;
-    --samm-soft: #2A2550;
-    --on-samm: #16142A;
+    --surface: #111715;
+    --surface-alt: #19211F;
+    --surface-sunken: #0C1110;
+    --line: #2A3431;
+    --line-strong: #6B7773;
+    --ink: #ECF1EE;
+    --ink-muted: #A4AEAA;
+    --on-ink: #111715;
+    --samm: #5FC2B6;
+    --samm-soft: #133331;
+    --on-samm: #111715;
     --terre: #F2A877;
     --terre-soft: #3A2618;
     --urgent: #FF8B7B;
@@ -90,7 +91,7 @@
     --info-soft: #18263A;
     --succes: #86CFA6;
     --succes-soft: #16301F;
-    --focus: #A99EF2;
+    --focus: #5FC2B6;
   --logo: #4FB3A9;
   }
 }

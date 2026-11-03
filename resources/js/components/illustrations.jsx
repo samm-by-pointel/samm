@@ -6,7 +6,7 @@
 
 const svgProps = { 'aria-hidden': true, focusable: false, xmlns: 'http://www.w3.org/2000/svg' };
 
-/* Tache lilas derrière chaque illustration d'étape */
+/* Tache vert pâle derrière chaque illustration d'étape */
 function Blob() {
     return <path d="M24 70c-6-28 22-52 62-56 44-4 92 6 102 36 10 32-18 62-60 68-46 6-98-12-104-48Z" className="fill-brand-soft" />;
 }

@@ -16,7 +16,7 @@ class BrandingCss
 {
     private const LIGHT_SURFACE = '#FFFFFF';
 
-    private const DARK_SURFACE = '#030712';
+    private const DARK_SURFACE = '#111715';
 
     private const LIGHT_SOFT_RATIO = 0.12;
 

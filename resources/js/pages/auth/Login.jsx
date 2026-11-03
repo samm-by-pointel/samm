@@ -1,4 +1,5 @@
 import { Link, useForm, usePage } from '@inertiajs/react';
+import { ArrowRight } from '../../components/icons';
 import { PageTitle } from '../../components/samm';
 import { Alert, Button, Field, Input } from '../../components/ui';
 import AuthLayout from '../../layouts/AuthLayout';
@@ -38,6 +39,7 @@ export default function Login({ action, forgotUrl }) {
                 </label>
                 <Button type="submit" size="lg" className="w-full" disabled={form.processing}>
                     {t('manage.auth.login.submit')}
+                    <ArrowRight size={18} weight="bold" aria-hidden="true" />
                 </Button>
                 {forgotUrl && (
                     <p className="text-center">

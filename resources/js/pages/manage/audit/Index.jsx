@@ -34,7 +34,7 @@ export default function Index({ entries, actions, selectedAction, filteredCase, 
                 </Alert>
             )}
 
-            <form onSubmit={apply} className="mb-6 flex flex-wrap items-end gap-3">
+            <form onSubmit={apply} className="mb-6 flex flex-wrap items-end gap-3 rounded-[28px] border border-line bg-surface-alt p-5">
                 <div className="min-w-64">
                     <label htmlFor="action" className="mb-1.5 block text-[14px] font-semibold text-muted">
                         {t('manage.audit.filter_action')}
@@ -56,9 +56,9 @@ export default function Index({ entries, actions, selectedAction, filteredCase, 
             {entries.data.length === 0 ? (
                 <Alert>{t('manage.audit.empty')}</Alert>
             ) : (
-                <div className="overflow-x-auto rounded-3xl border border-line bg-surface">
+                <div className="overflow-x-auto rounded-[28px] border border-line bg-surface">
                     <table className="w-full min-w-[820px] text-left text-[15px]">
-                        <thead className="border-b border-line text-[14px] text-muted">
+                        <thead className="border-b border-line bg-surface-alt text-[14px] text-muted">
                             <tr>
                                 {['date', 'action', 'actor', 'subject', 'reference'].map((column) => (
                                     <th key={column} scope="col" className="px-5 py-3.5 font-semibold whitespace-nowrap">

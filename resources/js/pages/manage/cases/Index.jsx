@@ -38,7 +38,7 @@ export default function Index({ cases, filters, statuses, priorities, categories
             <PageTitle area="manage" title={t('manage.cases.index.title')} />
             <PageHeader title={t('manage.cases.index.title')} />
 
-            <form onSubmit={apply} className="mb-6 rounded-3xl border border-line bg-surface p-5">
+            <form onSubmit={apply} className="mb-6 rounded-[28px] border border-line bg-surface-alt p-5">
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:items-end 2xl:grid-cols-[repeat(4,minmax(0,1fr))_repeat(2,minmax(0,0.8fr))_auto]">
                     <div>
                         {label(t('manage.cases.filters.status'), 'status')}
@@ -104,9 +104,9 @@ export default function Index({ cases, filters, statuses, priorities, categories
             {cases.data.length === 0 ? (
                 <Alert>{t('manage.cases.index.empty')}</Alert>
             ) : (
-                <div className="overflow-x-auto rounded-3xl border border-line bg-surface">
+                <div className="overflow-x-auto rounded-[28px] border border-line bg-surface">
                     <table className="w-full min-w-[760px] text-left text-[15px]">
-                        <thead className="border-b border-line text-[14px] text-muted">
+                        <thead className="border-b border-line bg-surface-alt text-[14px] text-muted">
                             <tr>
                                 {['reference', 'category', 'status', 'assignee', 'submitted_at', 'messages'].map((column) => (
                                     <th key={column} scope="col" className="px-5 py-3.5 font-semibold whitespace-nowrap">

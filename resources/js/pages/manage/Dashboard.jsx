@@ -23,8 +23,10 @@ export default function Dashboard({ canViewCases, counters, urls }) {
             {canViewCases ? (
                 <div className="grid gap-4 md:grid-cols-3">
                     {tiles.map(({ key, href, Icon }) => (
-                        <Link key={key} href={href} className="group flex flex-col rounded-3xl border border-line bg-surface p-6 hover:border-brand">
-                            <Icon size={28} className="text-brand" aria-hidden="true" />
+                        <Link key={key} href={href} className="group flex flex-col rounded-[28px] border border-line bg-surface p-6 hover:border-brand">
+                            <span aria-hidden="true" className="grid size-12 place-items-center rounded-2xl bg-brand-soft text-brand">
+                                <Icon size={26} weight="fill" />
+                            </span>
                             <span className="mt-6 text-[44px] leading-none font-bold tabular-nums">{counters[key]}</span>
                             <span className="mt-2 flex items-center justify-between gap-2 font-semibold text-muted group-hover:text-ink">
                                 {t(`manage.dashboard.${key}`)}

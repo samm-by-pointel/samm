@@ -32,13 +32,13 @@ export default function Show(props) {
                 )}
             </div>
 
-            <header className="flex flex-wrap items-center gap-3">
+            <header className="flex flex-wrap items-center gap-3 rounded-[28px] bg-brand-soft px-6 py-5">
                 <h1 className="font-mono text-[30px] font-bold tracking-[0.06em] sm:text-[34px]">{file.reference}</h1>
                 <StatusBadge status={file.status} />
                 {file.priority.isHigh && <Badge tone="urgent">{file.priority.label}</Badge>}
             </header>
 
-            <div className="mt-6 rounded-3xl border border-line bg-surface p-6">
+            <div className="mt-4 rounded-[28px] border border-line bg-surface p-6">
                 <DefinitionList
                     className="lg:grid-cols-3"
                     items={[
@@ -68,7 +68,7 @@ export default function Show(props) {
                 <div className="min-w-0 space-y-8">
                     <IdentityPanel identity={identity} />
 
-                    <section aria-labelledby="report-title" className="rounded-3xl border border-line bg-surface p-6 sm:p-8">
+                    <section aria-labelledby="report-title" className="rounded-[28px] border border-line bg-surface p-6 sm:p-8">
                         <h2 id="report-title" className="text-[21px] font-bold">
                             {t('manage.cases.show.report_title')}
                         </h2>
@@ -145,7 +145,7 @@ export default function Show(props) {
 
                 {hasActions && (
                     <aside aria-labelledby="actions-title" className="xl:sticky xl:top-8 xl:self-start">
-                        <div className="space-y-6 rounded-3xl border border-line bg-surface p-6">
+                        <div className="space-y-4">
                             <h2 id="actions-title" className="text-[19px] font-bold">
                                 {t('manage.cases.actions.title')}
                             </h2>
@@ -172,7 +172,7 @@ function IdentityPanel({ identity }) {
     const revealed = http.response?.identity;
 
     return (
-        <section aria-labelledby="identity-title" className="rounded-3xl border-2 border-dashed border-line-strong bg-surface p-6">
+        <section aria-labelledby="identity-title" className="rounded-[28px] border-2 border-dashed border-line-strong bg-surface p-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                     <h2 id="identity-title" className="text-[19px] font-bold">
@@ -251,7 +251,7 @@ function ReplyForm({ url }) {
                 form.post(url, { preserveScroll: true, onSuccess: () => form.reset() });
             }}
             noValidate
-            className="mt-4 space-y-3 rounded-3xl border border-line bg-surface p-5"
+            className="mt-4 space-y-3 rounded-[24px] border border-line bg-surface p-5"
         >
             <Field label={t('manage.cases.reply.compose')} help={t('manage.cases.reply.help')} error={form.errors.body}>
                 {(field) => <Textarea {...field} name="body" rows={4} maxLength={5000} value={form.data.body} onChange={(event) => form.setData('body', event.target.value)} />}
@@ -299,7 +299,7 @@ function AssignForm({ url, users, current }) {
                 form.post(url, { preserveScroll: true });
             }}
             noValidate
-            className="space-y-3"
+            className="space-y-3 rounded-[24px] border border-line bg-surface p-5"
         >
             <Field label={t('manage.cases.actions.assignment.label')} error={form.errors.assignee}>
                 {(field) => (
@@ -331,7 +331,7 @@ function StatusForm({ url, transitions }) {
                 form.post(url, { preserveScroll: true, onSuccess: () => form.reset() });
             }}
             noValidate
-            className="space-y-3 border-t border-line pt-6"
+            className="space-y-3 rounded-[24px] border border-line bg-surface p-5"
         >
             {transitions.length === 0 ? (
                 <>
@@ -375,7 +375,7 @@ function PriorityForm({ url, priorities, current }) {
                 form.post(url, { preserveScroll: true });
             }}
             noValidate
-            className="space-y-3 border-t border-line pt-6"
+            className="space-y-3 rounded-[24px] border border-line bg-surface p-5"
         >
             <Field label={t('manage.cases.actions.priority.label')} error={form.errors.priority}>
                 {(field) => (
