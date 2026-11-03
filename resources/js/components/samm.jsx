@@ -98,7 +98,7 @@ export function QuickExit({ className }) {
                 leaveQuickly(url);
             }}
             className={cx(
-                'inline-flex min-h-11 items-center gap-2 whitespace-nowrap rounded-full bg-ink px-4 text-[15px] font-semibold text-on-ink shadow-[0_2px_10px_rgb(28_36_34/0.25)] hover:brightness-125',
+                'inline-flex min-h-11 items-center gap-1.5 whitespace-nowrap rounded-full bg-ink px-3 text-[14px] font-semibold text-on-ink shadow-[0_2px_10px_rgb(28_36_34/0.25)] hover:brightness-125 sm:gap-2 sm:px-4 sm:text-[15px]',
                 className,
             )}
         >

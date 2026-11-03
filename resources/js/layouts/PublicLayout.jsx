@@ -1,17 +1,41 @@
-import { Link, usePage } from '@inertiajs/react';
-import { CaretRight, ShieldCheck } from '../components/icons';
+import { Link, router, usePage } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
+import { CaretRight, Menu, ShieldCheck, X } from '../components/icons';
 import { LocaleSwitcher, QuickExit, SammSymbol, ThemeToggle } from '../components/samm';
 import { useTranslator } from '../lib/i18n';
 
 /**
  * Cadre du site public. L'en-tête reste collé en haut : le bouton « Quitter
  * rapidement » est visible sur chaque écran, à tout moment (charte §12.2).
+ * Sur téléphone, tout le reste est rangé dans un menu.
  */
 export default function PublicLayout({ children }) {
     const { site, routes } = usePage().props;
     const t = useTranslator();
     const home = routes.home;
+    const [open, setOpen] = useState(false);
+
+    // Le menu se referme en changeant de page, et avec Échap (une seule fois :
+    // deux Échap restent la sortie rapide).
+    useEffect(() => router.on('navigate', () => setOpen(false)), []);
+    useEffect(() => {
+        if (!open) {
+            return undefined;
+        }
+        const onKeyDown = (event) => event.key === 'Escape' && setOpen(false);
+        document.addEventListener('keydown', onKeyDown);
+
+        return () => document.removeEventListener('keydown', onKeyDown);
+    }, [open]);
+
+    const anchors = [
+        ['fonctionnement', 'how'],
+        ['reconnaitre', 'recognize'],
+        ['garanties', 'guarantees'],
+        ['questions', 'faq'],
+    ];
     const navLink = 'whitespace-nowrap rounded-full px-3 py-2 text-[15px] font-semibold text-ink hover:bg-surface-alt';
+    const menuLink = 'flex min-h-12 items-center rounded-xl px-3 font-semibold hover:bg-surface-alt';
 
     return (
         <div className="flex min-h-screen flex-col">
@@ -20,7 +44,7 @@ export default function PublicLayout({ children }) {
             </a>
 
             <header className="sticky top-0 z-40 border-b border-line bg-surface/95 backdrop-blur supports-[backdrop-filter]:bg-surface/85">
-                <div className="mx-auto flex max-w-7xl items-center gap-6 px-5 py-3 sm:px-8">
+                <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-8 md:gap-6">
                     <Link href={home} className="flex min-h-11 shrink-0 items-center gap-3 text-[26px] leading-none font-bold text-ink">
                         {site.logoUrl && (
                             <>
@@ -29,7 +53,7 @@ export default function PublicLayout({ children }) {
                             </>
                         )}
                         <SammSymbol size={40} className="text-logo" />
-                        <span className="max-sm:sr-only">{site.name}</span>
+                        <span className="max-md:sr-only">{site.name}</span>
                     </Link>
 
                     <div className="ml-auto flex items-center gap-2 sm:gap-3">
@@ -38,11 +62,50 @@ export default function PublicLayout({ children }) {
                                 {t('public.nav.tracking')}
                             </Link>
                         </nav>
-                        <LocaleSwitcher compact />
-                        <ThemeToggle />
+                        <div className="hidden md:block">
+                            <LocaleSwitcher compact />
+                        </div>
+                        <div className="hidden md:block">
+                            <ThemeToggle />
+                        </div>
                         <QuickExit />
+                        <button
+                            type="button"
+                            aria-expanded={open}
+                            aria-controls="menu-mobile"
+                            onClick={() => setOpen((value) => !value)}
+                            className="inline-flex size-11 items-center justify-center rounded-full border border-line text-ink hover:bg-surface-alt md:hidden"
+                        >
+                            {open ? <X size={22} /> : <Menu size={22} />}
+                            <span className="sr-only">{open ? t('public.nav.close') : t('public.nav.menu')}</span>
+                        </button>
                     </div>
                 </div>
+
+                {open && (
+                    <div id="menu-mobile" className="border-t border-line bg-surface px-4 pt-3 pb-5 md:hidden">
+                        <nav aria-label={t('public.nav.label')}>
+                            <ul className="space-y-1">
+                                <li>
+                                    <Link href={routes.trackingLogin} className={`${menuLink} text-brand`}>
+                                        {t('public.nav.tracking')}
+                                    </Link>
+                                </li>
+                                {anchors.map(([anchor, key]) => (
+                                    <li key={anchor}>
+                                        <a href={`${home}#${anchor}`} onClick={() => setOpen(false)} className={menuLink}>
+                                            {t(`public.nav.${key}`)}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </nav>
+                        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
+                            <LocaleSwitcher />
+                            <ThemeToggle />
+                        </div>
+                    </div>
+                )}
             </header>
 
             <main id="contenu" className="flex-1">

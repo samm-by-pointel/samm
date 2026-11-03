@@ -45,6 +45,7 @@ import {
     UserCircleIcon as UserCircleOutline,
     UserGroupIcon as UserGroupOutline,
     XMarkIcon as XMarkOutline,
+    Bars3Icon as Bars3Outline,
     MoonIcon as MoonOutline,
     SunIcon as SunOutline,
 } from '@heroicons/react/24/outline';
@@ -89,6 +90,7 @@ import {
     UserCircleIcon as UserCircleSolid,
     UserGroupIcon as UserGroupSolid,
     XMarkIcon as XMarkSolid,
+    Bars3Icon as Bars3Solid,
     MoonIcon as MoonSolid,
     SunIcon as SunSolid,
 } from '@heroicons/react/24/solid';
@@ -128,6 +130,7 @@ export const Info = icon(InformationCircleOutline, InformationCircleSolid);
 export const Key = icon(KeyOutline, KeySolid);
 export const ListChecks = icon(ClipboardDocumentListOutline, ClipboardDocumentListSolid);
 export const LockKey = icon(LockClosedOutline, LockClosedSolid);
+export const Menu = icon(Bars3Outline, Bars3Solid);
 export const Moon = icon(MoonOutline, MoonSolid);
 export const MagnifyingGlass = icon(MagnifyingGlassOutline, MagnifyingGlassSolid);
 export const NotePencil = icon(PencilSquareOutline, PencilSquareSolid);

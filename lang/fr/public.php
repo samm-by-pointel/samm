@@ -22,6 +22,8 @@ return [
 
     'nav' => [
         'label' => 'Navigation principale',
+        'menu' => 'Menu',
+        'close' => 'Fermer le menu',
         'how' => 'Comment ça marche',
         'recognize' => 'Reconnaître le harcèlement',
         'guarantees' => 'Vos garanties',
