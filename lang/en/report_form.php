@@ -35,6 +35,15 @@ return [
     'start' => [
         'title' => 'Make a report',
         'lead' => 'You will describe a situation in a few short steps. You can go back at any time, and nothing is sent before the last step.',
+        'steps_title' => 'The six steps',
+        'step_help' => [
+            'situation' => 'You choose, from the list offered, the situation that fits best.',
+            'confidentialite' => 'Anonymous, pseudonym or confidential: you decide what is known about you.',
+            'description' => 'You describe what happened in your own words. Dates, place and context are optional.',
+            'personnes' => 'The people involved and any witnesses, only if you wish to name them.',
+            'pieces-jointes' => 'Documents, images or screenshots, only if you have any.',
+            'consentement' => 'You review and confirm the submission. Nothing is sent before that.',
+        ],
         'collected_title' => 'What we collect',
         'collected_1' => 'The kind of situation and your description, with the details you choose to give.',
         'collected_2' => 'The confidentiality level you choose, and a pseudonym or your identity only if you decide so.',

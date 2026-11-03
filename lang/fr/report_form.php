@@ -35,6 +35,15 @@ return [
     'start' => [
         'title' => 'Faire un signalement',
         'lead' => 'Vous allez décrire une situation en quelques étapes courtes. Vous pouvez revenir en arrière à tout moment, et rien n\'est transmis avant la dernière étape.',
+        'steps_title' => 'Les six étapes',
+        'step_help' => [
+            'situation' => 'Vous choisissez, dans la liste proposée, la situation qui correspond le mieux.',
+            'confidentialite' => 'Anonyme, pseudonyme ou confidentiel : vous décidez ce que l\'on sait de vous.',
+            'description' => 'Vous racontez les faits avec vos mots. Dates, lieu et contexte sont facultatifs.',
+            'personnes' => 'Les personnes concernées et d\'éventuels témoins, seulement si vous souhaitez les indiquer.',
+            'pieces-jointes' => 'Documents, images ou captures d\'écran, uniquement si vous en avez.',
+            'consentement' => 'Vous relisez et confirmez le dépôt. Rien n\'est transmis avant.',
+        ],
         'collected_title' => 'Ce que nous recueillons',
         'collected_1' => 'Le type de situation et votre description, avec les précisions que vous choisissez de donner.',
         'collected_2' => 'Le niveau de confidentialité que vous choisissez, et un pseudonyme ou votre identité seulement si vous le décidez.',
