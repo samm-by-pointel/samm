@@ -12,7 +12,7 @@ export default function AuthLayout({ children }) {
     return (
         <div className="flex min-h-screen flex-col items-center bg-surface-alt px-5 py-12 sm:py-20">
             <div className="mb-8 flex items-center gap-3">
-                <SammSymbol size={36} className="text-brand" />
+                <SammSymbol size={36} className="text-logo" />
                 <span>
                     <span className="block text-[22px] leading-tight font-bold">{site.appName}</span>
                     <span className="block text-[14px] text-muted">{t('manage.layout.area')}</span>

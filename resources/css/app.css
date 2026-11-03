@@ -38,6 +38,8 @@
   --succes: #2E6B4F;
   --succes-soft: #E1F1E8;
   --focus: #4636A8;
+  /* Logo Sàmm : le vert du kit officiel et du favicon, jamais redéfini par une organisation */
+  --logo: #0E5A55;
 }
 
 [data-bs-theme="dark"] {
@@ -63,6 +65,7 @@
   --succes: #86CFA6;
   --succes-soft: #16301F;
   --focus: #A99EF2;
+  --logo: #4FB3A9;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-bs-theme="light"]) {
@@ -88,6 +91,7 @@
     --succes: #86CFA6;
     --succes-soft: #16301F;
     --focus: #A99EF2;
+  --logo: #4FB3A9;
   }
 }
 
@@ -116,6 +120,7 @@
   --color-info-soft: var(--info-soft);
   --color-succes: var(--succes);
   --color-succes-soft: var(--succes-soft);
+  --color-logo: var(--logo);
 }
 
 @layer base {

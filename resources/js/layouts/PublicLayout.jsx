@@ -28,7 +28,7 @@ export default function PublicLayout({ children }) {
                                 <span aria-hidden="true" className="h-8 w-px bg-line" />
                             </>
                         )}
-                        <SammSymbol size={40} className="text-brand" />
+                        <SammSymbol size={40} className="text-logo" />
                         <span className="max-sm:sr-only">{site.name}</span>
                     </Link>
 

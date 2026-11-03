@@ -207,7 +207,7 @@ export default function Home({ levels, images }) {
             <section className="mx-auto w-full max-w-7xl px-5 pb-16 sm:px-8">
                 <div className="flex flex-col items-center gap-8 rounded-[28px] bg-brand-soft px-6 py-10 text-center md:flex-row md:text-left lg:px-12">
                     <span aria-hidden="true" className="grid size-20 shrink-0 place-items-center rounded-full bg-surface">
-                        <SammSymbol size={48} className="text-brand" />
+                        <SammSymbol size={48} className="text-logo" />
                     </span>
                     <div className="flex-1">
                         <p className="text-[24px] leading-snug font-bold text-brand">{t('public.home.cta_text')}</p>

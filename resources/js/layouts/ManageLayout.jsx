@@ -35,7 +35,7 @@ export default function ManageLayout({ children }) {
                         {site.logoUrl ? (
                             <img src={site.logoUrl} alt="" className="h-8 w-auto max-w-[110px] object-contain" />
                         ) : (
-                            <SammSymbol size={30} className="text-brand" />
+                            <SammSymbol size={30} className="text-logo" />
                         )}
                         <span>
                             <span className="block text-[18px] leading-tight font-bold">{site.appName}</span>
