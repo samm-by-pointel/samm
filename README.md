@@ -73,15 +73,6 @@ Les contributions sont bienvenues. Avant de proposer une modification, gardez à
 
 Pour signaler une faille de sécurité, suivez la procédure décrite dans `SECURITY.md`. Ne la publiez pas dans une issue.
 
-## Photos
-
-Les photos de la page d'accueil (`public/images/site/`) proviennent d'Unsplash et sont utilisées sous la [licence Unsplash](https://unsplash.com/license) :
-
-- `accueil.jpg` : [Joice Kelly](https://unsplash.com/photos/woman-in-orange-sweater-and-skirt-rXrMy7mXUEs)
-- `equipe.jpg` : [Vitaly Gariev](https://unsplash.com/photos/a-woman-talks-to-a-therapist-in-an-office-K_MSe-zglGI)
-
-Une organisation peut les remplacer par ses propres photos en gardant les mêmes noms de fichiers ; sans fichier, la page s'en passe.
-
 ## Licence
 
 GNU Affero General Public License v3.0. Voir `LICENSE`.
