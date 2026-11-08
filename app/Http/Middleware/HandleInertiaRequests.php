@@ -121,6 +121,7 @@ class HandleInertiaRequests extends Middleware
             'logoUrl' => $organization?->hasLogo() ? $organization->logoUrl() : null,
             'quickExitUrl' => $organization?->effectiveQuickExitUrl() ?? config('samm.quick_exit_url'),
             'trackingSessionMinutes' => (int) config('samm.tracking.session_minutes'),
+            'publisherUrl' => config('samm.publisher_url'),
         ];
     }
 }

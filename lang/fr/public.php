@@ -134,7 +134,9 @@ return [
     ],
 
     'footer' => [
-        'initiative' => 'Sàmm, une initiative de Pointel.',
+        'initiative' => 'Sàmm, une initiative de :pointel.',
+        'pointel_label' => 'Pointel',
+        'new_window' => '(nouvelle fenêtre)',
         'about' => 'Un dispositif de signalement des violences, du harcèlement et des discriminations, qui protège la parole des personnes qui signalent.',
         'service_title' => 'Le dispositif',
         'privacy_title' => 'Confidentialité',

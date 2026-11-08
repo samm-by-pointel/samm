@@ -134,7 +134,9 @@ return [
     ],
 
     'footer' => [
-        'initiative' => 'Sàmm, an initiative by Pointel.',
+        'initiative' => 'Sàmm, an initiative by :pointel.',
+        'pointel_label' => 'Pointel',
+        'new_window' => '(new window)',
         'about' => 'A reporting service for violence, harassment and discrimination that protects the voice of those who speak up.',
         'service_title' => 'The service',
         'privacy_title' => 'Privacy',

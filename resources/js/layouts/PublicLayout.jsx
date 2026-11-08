@@ -34,6 +34,8 @@ export default function PublicLayout({ children }) {
         ['garanties', 'guarantees'],
         ['questions', 'faq'],
     ];
+    // La phrase du pied de page garde un jeton :pointel dans les fichiers de langue ; le lien est inséré ici.
+    const initiative = t('public.footer.initiative', { pointel: '\u0000' }).split('\u0000');
     const navLink = 'whitespace-nowrap rounded-full px-3 py-2 text-[15px] font-semibold text-ink hover:bg-surface-alt';
     const menuLink = 'flex min-h-12 items-center rounded-xl px-3 font-semibold hover:bg-surface-alt';
 
@@ -154,7 +156,14 @@ export default function PublicLayout({ children }) {
                         <p className="opacity-80">{t('public.footer.privacy')}</p>
                     </div>
                     <div className="space-y-2 text-[14px] opacity-80 lg:pl-10">
-                        <p>{t('public.footer.initiative')}</p>
+                        <p>
+                            {initiative[0]}
+                            <a href={site.publisherUrl} target="_blank" rel="noopener noreferrer" className="font-semibold underline-offset-2 hover:underline">
+                                {t('public.footer.pointel_label')}
+                                <span className="sr-only"> {t('public.footer.new_window')}</span>
+                            </a>
+                            {initiative[1]}
+                        </p>
                         <p>{t('public.footer.license')}</p>
                     </div>
                 </div>
